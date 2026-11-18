@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-> **Status: Phase 2 — offline dataset validation and leakage-aware preprocessing implemented.** No official data has yet been downloaded, no model has been trained, and no performance scores have been measured. The dashboard remains a placeholder.
+> **Status: Phase 3 — reproducible baseline training implemented and verified with synthetic fixtures.** No official UNSW records have been downloaded or trained on, and no performance scores are available. The Streamlit dashboard remains a placeholder.
 
 ## Project Overview
 
@@ -25,7 +25,7 @@ Network intrusion detection requires distinguishing suspicious activity from ord
 
 **Dataset chosen:** UNSW-NB15. Its [official research page](https://research.unsw.edu.au/projects/unsw-nb15-dataset) grants academic-research use, retains the authors' copyright, requires citations to five papers, and states that commercial use needs author agreement. The data are **not bundled, mirrored, or MIT licensed**. Instructions and attribution: [docs/dataset.md](docs/dataset.md).
 
-Implemented in Phase 2: offline reading and schema validation of the provider-named CSVs; stratified training/validation split only within the official training portion; exclusion of `id`, `attack_cat`, and `label`; and an **unfitted** `ColumnTransformer` for numeric median imputation/scaling and categorical mode imputation/one-hot encoding. **Fit it only on training data inside the Phase 3 model pipeline.** No official files have been processed yet. The held-out official test partition is not used for model selection.
+Implemented in Phase 2: offline reading and schema validation of the provider-named CSVs; stratified training/validation split only within the official training portion; exclusion of `id`, `attack_cat`, and `label`; and an **unfitted** `ColumnTransformer` for numeric median imputation/scaling and categorical mode imputation/one-hot encoding. **Phase 3 now fits it independently in each training-only model pipeline.** No official files have been processed yet. The held-out official test partition is not used for training or model selection.
 
 ## System Architecture
 
@@ -44,7 +44,7 @@ flowchart LR
 | --- | --- | --- |
 | `src/nids/data/` | Dataset import and validation | **2 — implemented** |
 | `src/nids/features/` | Leakage-safe preprocessing | **2 — implemented** |
-| `src/nids/models/train.py` | Reproducible model training | 3 |
+| `src/nids/models/train.py` | Reproducible Logistic Regression and Random Forest baselines | **3 — implemented** |
 | `src/nids/models/evaluate.py` | Held-out evaluation and metrics | 4 |
 | `src/nids/visualization/` | Confusion matrix / ROC figures | 4 |
 | `app/streamlit_app.py` | Offline results dashboard | 5 |
@@ -66,6 +66,8 @@ python -m pip install -r requirements-dev.txt
 nids status
 # Download the two provider-named CSVs separately to data/raw/ before inspecting:
 nids inspect-data --data-dir data/raw
+# Only when you have the official CSVs downloaded locally:
+nids train --data-dir data/raw --output-dir artifacts/models --seed 42 --trees 100
 pytest -q
 ```
 
@@ -76,7 +78,7 @@ PYTHONPATH=src python -m nids.cli status      # Linux/macOS
 # PowerShell: $env:PYTHONPATH='src'; python -m nids.cli status
 ```
 
-The `status` command reports whether *local* dataset/model/result files exist. The `inspect-data` command checks local official CSVs and prints aggregate counts only (not individual records). Neither trains a classifier or evaluates network security.
+The `status` command reports whether *local* dataset/model/result files exist. `inspect-data` prints aggregate counts only. The `train` command (requiring official local CSVs) fits both baselines and saves them under ignored `artifacts/models/` without evaluating test performance. See [training instructions](docs/training.md).
 
 When implemented in Phase 5, the dashboard will start using:
 
@@ -86,16 +88,16 @@ streamlit run app/streamlit_app.py
 
 ## Model Evaluation
 
-**Not run yet.** Predefined reporting will include class-wise precision/recall/F1, confusion matrix, ROC-AUC if scores and labels are appropriate, and a false-positive rate with clear denominators. The untouched test partition will not be used for model selection. See [experiment protocol](docs/experiment_log.md).
+**Not run on official data yet.** Phase 3 fits the pipelines only; predictive metrics are not calculated. Predefined reporting will include class-wise precision/recall/F1, confusion matrix, ROC-AUC if scores and labels are appropriate, and a false-positive rate with clear denominators. The untouched test partition will not be used for model selection. See [experiment protocol](docs/experiment_log.md).
 
 ## Results and Limitations
 
-**No numerical model results are available at Phase 2.** The repository provides offline dataset loading and preprocessing logic with synthetic tests, not an operational detection system. UNSW permits academic research under attribution conditions; actual row distributions and predictive performance await authorized local-data inspection and experimentation. Training on a static academic dataset will not demonstrate reliable real-world generalization or suitability for deployment.
+**No numerical model results are available at Phase 3.** The repository provides offline dataset loading, preprocessing and two classifier training pipelines tested only on synthetic fixtures, not an operational detection system. UNSW permits academic research under attribution conditions; actual row distributions and predictive performance await authorized local-data inspection and experimentation. Training on a static academic dataset will not demonstrate reliable real-world generalization or suitability for deployment.
 
 ## Future Improvements
 
 - Obtain official data locally under UNSW academic-use terms and inspect source distributions (Phase 2 file validation).
-- Add reproducible baseline training and artifact metadata (Phase 3).
+- Run the implemented reproducible baseline training on permitted official local data and record manifest hashes (Phase 3 operational run).
 - Evaluate on held-out records and analyze false positives (Phase 4).
 - Build a read-only, offline reporting interface (Phase 5).
 - Add substantive preprocessing/training/evaluation tests and CI quality checks (Phase 6).

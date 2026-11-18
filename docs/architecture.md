@@ -1,4 +1,4 @@
-# Software Architecture (Phase 1)
+# Software Architecture (Phase 3)
 
 ## Design principles
 
@@ -22,6 +22,7 @@ ai-network-intrusion-detection/
 │   └── processed/                    # local transformed files
 ├── docs/
 │   ├── architecture.md
+│   ├── training.md
 │   ├── experiment_log.md
 │   └── research_report.md
 ├── src/nids/
@@ -29,10 +30,10 @@ ai-network-intrusion-detection/
 │   ├── config.py                      # working path management
 │   ├── data/load.py                   # Phase 2
 │   ├── features/preprocess.py         # Phase 2
-│   ├── models/train.py                # Phase 3
+│   ├── models/train.py                # Phase 3 implemented
 │   ├── models/evaluate.py             # Phase 4
 │   └── visualization/plots.py         # Phase 4
-├── tests/                             # scaffold unit tests
+├── tests/                             # synthetic offline unit tests
 ├── .gitignore
 ├── pyproject.toml
 ├── requirements.txt
@@ -45,12 +46,12 @@ ai-network-intrusion-detection/
 | --- | --- | --- |
 | `data/load.py` | Official academic CSV paths | Validated DataFrame and schema report |
 | `features/preprocess.py` | Training DataFrame, target definition | Fitted training-only transformer |
-| `models/train.py` | Training/validation partitions, model config | Model bundle and reproducibility metadata |
+| `models/train.py` | Training/validation partitions, model config | Two fitted pipelines and versioned run manifest |
 | `models/evaluate.py` | Unseen test DataFrame, model bundle | Quantitative metrics and class-level error analysis |
 | `visualization/plots.py` | Verified evaluation results | Saved figures |
 | `app/streamlit_app.py` | Local, non-sensitive results | Read-only model comparison view |
 
-**Status:** Dataset loading, partitioning and unfitted feature transformations in Phase 2 are implemented and tested with synthetic fixtures. No real data has been inspected or models trained. Components marked Phases 3–5 still contain placeholders.
+**Status:** Dataset loading and leakage-safe feature processing (Phase 2) and Logistic Regression / Random Forest training with local model persistence (Phase 3) are implemented and tested using synthetic fixtures. No official UNSW records have been processed, and no full-dataset models or detection metrics exist. Evaluation and dashboard (Phases 4–5) remain placeholders. See [training protocol](training.md).
 
 ## Local directory convention
 
