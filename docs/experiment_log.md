@@ -29,7 +29,7 @@
 
 **Important distinction:** Passing test cases on fictional rows demonstrates that the software executes; it does **not** validate the classifier on real intrusions. See `docs/training.md`.
 
-**Data provenance limitation:** The loader validates schema and expected filenames, not the authenticity or rights attached to each CSV. Only results from independently verified official files may be cited in academic claims. The official test is opened during input validation, but its labels are never used to fit, tune, or select a model.
+**Data provenance limitation:** The loader validates schema and expected filenames, not the authenticity or rights attached to each CSV. Official source access is documented by UNSW's linked institutional SharePoint repository; the file digests describe local copies, not publisher reference checksums. The official test is opened during input validation, but its labels are never used to fit, tune, or select a model.
 
 
 ## Phase 7 documentation verification (2026-11-18)
@@ -51,9 +51,9 @@
 - Next action: acquire the provider's pre-split CSVs with the user, verify origin and observed row counts, run `nids evaluate`, then review the output and update the research manuscript.
 
 
-## 2026-11-18 22:12:10 UTC — First measured experiment on user-supplied files
+## 2026-11-18 22:12:10 UTC — First measured experiment on official-link UNSW-NB15 CSVs
 
-- Received `OneDrive_3_19-11-2026.zip` from the user containing two correctly named CSVs; ZIP CRC check passed, row counts 175,341 training and 82,332 test, 45 columns, no pandas-recognized missing cells. Screenshot shows original access to a shared OneDrive folder. Independent provider-byte authentication was **not** performed.
+- Received `OneDrive_3_19-11-2026.zip` from the user containing two correctly named CSVs; ZIP CRC check passed, row counts 175,341 training and 82,332 test, 45 columns, no pandas-recognized missing cells. The researcher subsequently confirmed this was the university-hosted SharePoint folder reached from UNSW's official webpage. No separate publisher-issued checksum comparison was available.
 - Input SHA-256: training `bec7dd5ec88dc2a0ccc7a07879d338395ed7421750f675fd0339e07dfe0648fa`, testing `734fe6642edf758f7c94d7d9149426b49d202fe8e7bf0bef47392489c3c0a559`.
 - Predeclared protocol: fit/validation split 140,272/35,069 using seed 42; logistic regression (max_iter 1000) vs Random Forest (100 trees) chosen by validation attack F1. Both preprocessors fitted only on fit data. Test scored once for selected Random Forest.
 - Validation attack F1: Logistic Regression 95.03%, Random Forest 96.22%; selected Random Forest.
@@ -62,3 +62,10 @@
 - Evaluation environment: Python 3.13.5, NumPy 2.3.5, pandas 2.2.3, scikit-learn 1.8.0, joblib 1.5.3.
 - Complete file: [measured aggregate JSON](results/evaluation.json); numerical summary: [benchmark_summary.md](results/benchmark_summary.md); full scientific discussion: [research_report.md](research_report.md).
 - Raw datasets remained under git-ignored `data/raw/`. Neither CSV rows nor serialized models are published. Confirmation of GitHub CI on the final commit must be checked separately.
+
+
+## 2026-11-19 — Official dataset-link provenance clarification
+
+- The researcher followed the **HERE** download link on the [official UNSW-NB15 dataset page](https://research.unsw.edu.au/projects/unsw-nb15-dataset) to the UNSW-hosted SharePoint/OneDrive dataset folder, selected `CSV Files / Training and Testing Sets`, downloaded the two official CSVs, and provided a ZIP for local experiments.
+- Earlier wording implying an unknown third-party OneDrive source was inaccurate. The university webpage explicitly links to the same `unsw-my.sharepoint.com` download service.
+- SHA-256 values remain identifiers of the local files; no publisher-issued reference digest was supplied for an independent byte-level comparison. **No training inputs, model parameters, scores or dataset rows were changed by this documentation correction.**

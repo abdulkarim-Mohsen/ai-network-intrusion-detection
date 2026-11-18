@@ -5,16 +5,16 @@
 **Faculty:** College of Engineering and Information Technology  
 **Specialization:** Cybersecurity and Networks  
 
-**Research status:** A single local **empirical benchmark completed** using user-provided UNSW-NB15-layout CSVs; independent source authentication and external replication remain outstanding.  
+**Research status:** One local **empirical benchmark completed** using UNSW-NB15 CSVs downloaded through the official UNSW Research page's university-hosted SharePoint/OneDrive link. Independent scientific replication remains outstanding.  
 **Execution:** 2026-11-18T22:12:10.975945+00:00  
 **Repository:** https://github.com/abdulkarim-Mohsen/ai-network-intrusion-detection  
 **Research type:** Defensive, offline supervised binary network-flow classification.
 
-> **Provenance:** The user supplied a ZIP downloaded from a shared OneDrive folder named UNSW-NB15 dataset. The two CSV names, schema, and record counts match UNSW's documented pre-partitioned CSVs. However, we did not independently verify that the file bytes came directly from the dataset provider. The CSVs remain private to the local experiment and are **not** in this GitHub repository. All reported model values below were genuinely calculated from the supplied files, not from synthetic test fixtures.
+> **Dataset provenance:** The researcher followed the **HERE** link on the [official UNSW-NB15 dataset page](https://research.unsw.edu.au/projects/unsw-nb15-dataset) to the university-hosted SharePoint/OneDrive dataset folder, downloaded `UNSW_NB15_training-set.csv` and `UNSW_NB15_testing-set.csv`, and provided them for this local experiment. Both files match the provider's documented names, schemas, and record counts. The original CSVs are not redistributed on GitHub. All reported metrics were measured on these files, not synthetic fixtures. No publisher-issued reference checksum was available for a separate byte-for-byte comparison.
 
 ## Abstract
 
-This study evaluates two supervised machine-learning baselines, Logistic Regression and Random Forest, for offline detection of suspicious network-flow records in user-supplied UNSW-NB15-format data. The submitted files contained 175,341 designated training records and 82,332 designated test records. A stratified 80/20 split of the designated training file supplied fitting and validation data. The numeric and categorical preprocessing components were fitted on the fitting subset only; `id`, `attack_cat`, and `label` were excluded from predictors. Random Forest was selected using validation attack-class F1 (96.22%) compared with Logistic Regression (95.03%). On the held-out test file, the selected Random Forest achieved 90.59% accuracy, 87.27% attack precision, 97.07% attack recall, 91.91% attack F1, and 98.46% ROC-AUC. Importantly, it produced 6,419 false positives among 37,000 normal test records (17.35% false-positive rate). A post-hoc feature-hash audit identified 8,054 test records sharing exact predictor hashes with records in the fitted subset, challenging the independence assumption. These measurements apply only to one local run on source-unverified supplied files and do not demonstrate production network reliability.
+This study evaluates two supervised machine-learning baselines, Logistic Regression and Random Forest, for offline detection of suspicious network-flow records in UNSW-NB15 data downloaded through the official UNSW-linked repository. The submitted files contained 175,341 designated training records and 82,332 designated test records. A stratified 80/20 split of the designated training file supplied fitting and validation data. The numeric and categorical preprocessing components were fitted on the fitting subset only; `id`, `attack_cat`, and `label` were excluded from predictors. Random Forest was selected using validation attack-class F1 (96.22%) compared with Logistic Regression (95.03%). On the held-out test file, the selected Random Forest achieved 90.59% accuracy, 87.27% attack precision, 97.07% attack recall, 91.91% attack F1, and 98.46% ROC-AUC. Importantly, it produced 6,419 false positives among 37,000 normal test records (17.35% false-positive rate). A post-hoc feature-hash audit identified 8,054 test records sharing exact predictor hashes with records in the fitted subset, challenging the independence assumption. These measurements apply only to this local experiment and do not demonstrate production network reliability.
 
 **Keywords:** network intrusion detection; UNSW-NB15; Logistic Regression; Random Forest; held-out evaluation; false positives; data duplication.
 
@@ -24,14 +24,14 @@ Intrusion-detection systems must identify malicious activity without overwhelmin
 
 ## 2. Dataset provenance and permission
 
-UNSW's public dataset documentation identifies the *UNSW-NB15* train/test partitions [1–5] and specifies conditions for academic use and required references. The dataset is owned and licensed independently of this project's MIT-licensed source code. The user provided two files with these exact names:
+UNSW's public dataset documentation identifies the *UNSW-NB15* train/test partitions [1–5] and specifies conditions for academic use and required references. The dataset is owned and licensed independently of this project's MIT-licensed source code. The researcher downloaded these two official pre-partitioned files via the UNSW website's institutional repository:
 
-| User-provided file | Measured rows | Normal (label 0) | Attack (label 1) | SHA-256 |
+| Dataset file | Measured rows | Normal (label 0) | Attack (label 1) | SHA-256 |
 | --- | ---: | ---: | ---: | --- |
 | `UNSW_NB15_training-set.csv` | 175,341 | 56,000 | 119,341 | `bec7dd5ec88dc2a0ccc7a07879d338395ed7421750f675fd0339e07dfe0648fa` |
 | `UNSW_NB15_testing-set.csv` | 82,332 | 37,000 | 45,332 | `734fe6642edf758f7c94d7d9149426b49d202fe8e7bf0bef47392489c3c0a559` |
 
-Both files were read successfully from the uploaded ZIP, and each had 45 columns including `label` and no pandas-recognized missing cells. **These observations do not certify the provider origin** or independence of the two partitions. The SHA-256 fingerprints identify the exact local input bytes. Original CSV contents were neither committed nor included in distributable project archives.
+Both files were read successfully from the uploaded ZIP, with 45 columns each including `label` and no pandas-recognized missing cells. The university webpage establishes the official download route; the recorded SHA-256 fingerprints identify the local copies, without a separate publisher-issued reference checksum for comparison. These checks do not establish independence of train/test records. Original CSV data were not committed or included in distributable archives.
 
 ## 3. Methods
 
@@ -120,7 +120,7 @@ This diagnostic was performed **after** the completed test evaluation, not to ch
 
 ## 6. Limitations and threats to validity
 
-1. **Source authenticity:** The user-submitted CSVs match the official UNSW-NB15 train/test naming, shape and counts, but independent provider-byte verification was not possible in this session.
+1. **Reference checksums:** The researcher used the university-hosted download repository linked from the official UNSW webpage. No publisher-issued SHA-256 reference was available for independent byte-for-byte comparison of the local copies.
 2. **Correlated / duplicate observations:** Predictor-vector overlaps appear in training, validation and the held-out test. This may lead to optimistically biased metrics even without procedural preprocessing leakage.
 3. **False alarms and prevalence:** The false-positive rate is 17.35%; precision is prevalence-dependent and should not be conflated with FPR. An operational false alarm count per hour cannot be inferred from this static dataset.
 4. **Generalization:** The research dataset represents a historical controlled environment, not modern production infrastructure, zero-day attacks or an externally replicated deployment.
@@ -134,7 +134,7 @@ The experiment uses uploaded academic tabular data only; the original datasets, 
 
 ## 8. Conclusion and next empirical step
 
-For this one local benchmark, Random Forest exceeded Logistic Regression on the prespecified **validation attack-F1 selection metric** (96.22% versus 95.03%). Its held-out test attack F1 was 91.91%, with a substantial 17.35% FPR. The results answer the narrow, predeclared local classification comparison, but they do **not** establish superiority on the test set over Logistic Regression, generalization to deployment traffic, or independently authenticated UNSW source provenance. Next steps should include external source verification and a newly pre-specified source-aware deduplicated evaluation. The existing held-out test results must not be reused to tune the present model and portrayed as an unbiased first evaluation.
+For this one local benchmark, Random Forest exceeded Logistic Regression on the prespecified **validation attack-F1 selection metric** (96.22% versus 95.03%). Its held-out test attack F1 was 91.91%, with a substantial 17.35% FPR. The results answer the narrow, predeclared local classification comparison, but they do **not** establish superiority on the test set over Logistic Regression, generalization to deployment traffic, or external generalization. Next steps should include a newly pre-specified source-aware deduplicated evaluation. The existing held-out test results must not be reused to tune the present model and portrayed as an unbiased first evaluation.
 
 ## References
 

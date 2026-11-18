@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-> **Status: seven implementation stages complete, plus one local empirical run on user-supplied UNSW-NB15-layout data.** Random Forest was selected by validation attack F1; it achieved **91.91% attack F1** and **17.35% false-positive rate** on the supplied held-out test file. **Dataset-byte authenticity was not independently verified.** Predictor-vector duplicates across splits raise possible optimism; this is not a deployment-ready IDS. Original CSVs and models are excluded from GitHub.
+> **Status: seven implementation stages complete, plus one local empirical run on UNSW-NB15 data downloaded via UNSW's official SharePoint link.** Random Forest was selected by validation attack F1; it achieved **91.91% attack F1** and **17.35% false-positive rate** on the supplied held-out test file. Predictor-vector duplicates across splits raise possible optimism; this is not a deployment-ready IDS. Original CSVs and models are excluded from GitHub.
 
 **Researcher:** Abdulkarim Mohsen Hussein Alhuos  
 **Affiliation:** College of Engineering and Information Technology, Amran University  
@@ -29,7 +29,7 @@ Network intrusion detection requires distinguishing suspicious activity from ord
 
 **Dataset chosen:** UNSW-NB15. Its [official research page](https://research.unsw.edu.au/projects/unsw-nb15-dataset) grants academic-research use, retains the authors' copyright, requires citations to five papers, and states that commercial use needs author agreement. The data are **not bundled, mirrored, or MIT licensed**. Instructions and attribution: [docs/dataset.md](docs/dataset.md).
 
-Implemented in Phase 2: offline reading and schema validation of the provider-named CSVs; stratified training/validation split only within the official training portion; exclusion of `id`, `attack_cat`, and `label`; and an **unfitted** `ColumnTransformer` for numeric median imputation/scaling and categorical mode imputation/one-hot encoding. **Phase 3 now fits it independently in each training-only model pipeline.** User-provided UNSW-NB15-layout files were processed for a single local empirical benchmark; source authenticity was not independently established. The held-out official test partition is not used for training or model selection.
+Implemented in Phase 2: offline reading and schema validation of the provider-named CSVs; stratified training/validation split only within the official training portion; exclusion of `id`, `attack_cat`, and `label`; and an **unfitted** `ColumnTransformer` for numeric median imputation/scaling and categorical mode imputation/one-hot encoding. **Phase 3 now fits it independently in each training-only model pipeline.** The research files were downloaded through the official UNSW dataset webpage's institutional SharePoint link and used for one local empirical benchmark. The held-out official test partition is not used for training or model selection.
 
 ## System Architecture
 
@@ -94,7 +94,7 @@ The Phase 5 dashboard is implemented. Start it locally using:
 streamlit run app/streamlit_app.py
 ```
 
-The app reads `artifacts/reports/evaluation.json` locally, displays **only aggregate** validation/test metrics, offers a validation model-comparison chart and a held-out confusion matrix, and warns that CSV provenance is not established by file names or checksums. It never loads joblib/pickle objects, raw flow rows, or live network packets. Missing evaluation files produce setup instructions, **not fake model scores**. See [dashboard guide](docs/dashboard.md). Optional local override: `NIDS_REPORT_DIR`.
+The app reads `artifacts/reports/evaluation.json` locally, displays **only aggregate** validation/test metrics, offers a validation model-comparison chart and a held-out confusion matrix, and displays official-source notes and distinguishes the download route from local file checksums. It never loads joblib/pickle objects, raw flow rows, or live network packets. Missing evaluation files produce setup instructions, **not fake model scores**. See [dashboard guide](docs/dashboard.md). Optional local override: `NIDS_REPORT_DIR`.
 
 ## Testing and Quality
 
@@ -102,11 +102,11 @@ Phase 6 runs source compilation, a basic CLI smoke test, pytest with a **90% min
 
 ## Model Evaluation
 
-**Implemented and executed once on the user-supplied dataset.** Phase 4 computes validation metrics for both baselines and selects a winner using *positive-class validation F1*. Only this preselected model is scored against the held-out provider testing split. Reported fields include class-wise precision/recall/F1, class support, 2×2 confusion matrix, false-positive rate `FP/(TN+FP)`, false-negative rate, macro/weighted F1, and ROC-AUC (set to `null` with an explanation if the true labels contain one class). Output PNGs contain only aggregate figures. See [evaluation protocol](docs/evaluation.md).
+**Implemented and executed once on the downloaded UNSW-NB15 dataset.** Phase 4 computes validation metrics for both baselines and selects a winner using *positive-class validation F1*. Only this preselected model is scored against the held-out provider testing split. Reported fields include class-wise precision/recall/F1, class support, 2×2 confusion matrix, false-positive rate `FP/(TN+FP)`, false-negative rate, macro/weighted F1, and ROC-AUC (set to `null` with an explanation if the true labels contain one class). Output PNGs contain only aggregate figures. See [evaluation protocol](docs/evaluation.md).
 
 ## Results and Limitations
 
-**One measured local benchmark** was completed on user-supplied CSVs named for the UNSW-NB15 train/test partitions. The files matched the documented row counts and 45-column schema but were **not independently authenticated** against provider-distributed bytes. Only the selected model was scored on held-out test data.
+**One measured local benchmark** was completed on the UNSW-NB15 CSVs downloaded through the official UNSW Research page's university-hosted SharePoint link. The files matched its documented row counts and 45-column schema. Only the selected model was scored on held-out test data.
 
 | Metric (validation only) | Logistic Regression | Random Forest |
 | --- | ---: | ---: |
@@ -129,7 +129,7 @@ Phase 6 runs source compilation, a basic CLI smoke test, pytest with a **90% min
 
 ## Future Improvements
 
-- Independently verify the CSV bytes against the provider's official data and cite all five required publications.
+- Compare recorded file hashes with publisher-issued checksums if available and cite all five required publications.
 - Pre-register and perform a **new** leakage-resistant, source-aware deduplicated experiment; do not retune using the current held-out test and call it an unbiased first test.
 - Replicate on additional datasets or separated recording sessions; assess model calibration and alert-volume costs.
 - Improve operational relevance while keeping the prototype offline, defensive and privacy-preserving.
@@ -137,7 +137,7 @@ Phase 6 runs source compilation, a basic CLI smoke test, pytest with a **90% min
 
 ## Academic Documentation (Phase 7 + empirical follow-up)
 
-The research software, citations, and empirical manuscript are available. Scientific statements are limited to the measured local run, with documented source-provenance and predictor-duplication limitations. The README and portfolio describe a research prototype, **not a certified or published IDS**.
+The research software, citations, and empirical manuscript are available. Scientific statements are limited to the measured local run, with documented official download provenance and predictor-duplication limitations. The README and portfolio describe a research prototype, **not a certified or published IDS**.
 
 - [Research report](docs/research_report.md)
 - [Reproducibility guide](docs/reproducibility.md)

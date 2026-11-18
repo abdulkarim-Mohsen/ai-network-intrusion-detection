@@ -5,12 +5,12 @@
 UNSW Sydney / UNSW Canberra, **UNSW-NB15 Dataset**:
 https://research.unsw.edu.au/projects/unsw-nb15-dataset
 
-The official webpage links to the provider's download location. Obtain these **specific pre-split CSVs**, not the four large raw CSVs used to construct the corpus:
+The official webpage's **HERE** link leads directly to the university-hosted SharePoint/OneDrive location used by the researcher to download these CSVs. Obtain these **specific pre-split CSVs**, not the four large raw CSVs used to construct the corpus:
 
 - `UNSW_NB15_training-set.csv` — the official page describes **175,341** records.
 - `UNSW_NB15_testing-set.csv` — the official page describes **82,332** records.
 
-Those figures are **provider-reported metadata**, not measurements produced by this project. No data has been bundled with the repository. Keep both official files under `data/raw/`; they are excluded by `.gitignore`.
+Those figures are **provider-reported metadata**, and the completed local experiment also measured the same row counts. No data has been bundled with the repository. Keep both official files under `data/raw/`; they are excluded by `.gitignore`.
 
 ## 2. Terms of use and required attribution
 
@@ -61,7 +61,7 @@ The `inspect-data` command reads only the two local CSV files, checks required c
 
 This dataset is from a controlled simulation setting rather than live deployment. Its provided train/test partitions are not proof of time-based independence or absence of highly similar sessions. Class proportions can differ between train and test. Future evaluation must report the positive-class definition, class distributions, prevalence-sensitive metrics, and false-positive rate, and explicitly discuss any split limitations.
 
-**Status on 2026-11-18:** Dataset download and actual-row inspection have not been performed. The loader and preprocessing logic have been tested on *synthetic fixtures only*.
+**Status updated on 2026-11-19:** The researcher obtained the two pre-split CSVs through the official UNSW webpage's linked institutional SharePoint folder. An empirical benchmark was completed; the datasets themselves are not published in the repository. Synthetic fixtures remain in the software tests.
 
 
 ## Complete mandatory bibliography

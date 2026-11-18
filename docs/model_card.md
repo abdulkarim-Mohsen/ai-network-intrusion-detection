@@ -1,6 +1,6 @@
 # Model Card — Offline Binary Network-Flow Baselines
 
-**Status:** A single real-data **local experiment** was conducted on user-provided UNSW-NB15-layout CSVs; the source bytes were not independently authenticated. The designated train/test layout matches the published dataset sizes, but exact predictor overlap across splits limits interpretation. This is a non-deployable research prototype; no model binary is distributed here.
+**Status:** One real-data local benchmark was completed on UNSW-NB15 files downloaded through the official UNSW Research page's institutional SharePoint link. Predictor overlap across splits limits interpretation. This is an offline research prototype, not a deployable IDS; trained binaries are not distributed.
 
 ## Intended use
 
@@ -20,7 +20,7 @@ Logistic Regression and Random Forest, each with its own training-only scikit-le
 
 **Held-out selected Random Forest (82,332 rows):** attack precision 87.27%; recall 97.07%; F1 91.91%; accuracy 90.59%; ROC-AUC 98.46%; FPR 17.35%; FNR 2.93%. Confusion matrix `[[30581, 6419], [1328, 44004]]` (true rows, predicted columns; order normal, attack).
 
-These are measured on user-supplied benchmark files, **not independent official-byte verification or field validation**. No held-out test comparison for Logistic Regression was conducted, by design.
+These measurements use the official-link UNSW-NB15 files and are **not field-deployment validation**. Logistic Regression was not evaluated on the held-out test partition, by the prespecified selection protocol.
 
 ## Primary risks and limitations
 

@@ -1,11 +1,11 @@
 # Empirical Results Record — Completed Local Benchmark
 
-> **Provenance:** Measured on user-provided CSVs with UNSW-NB15 official-split filenames and matching record counts; independent provider-file authentication not established. Results from one local experiment; do not interpret as external deployment validation.
+> **Dataset provenance:** Files were downloaded by the researcher using the institutional SharePoint/OneDrive link on the [official UNSW-NB15 dataset page](https://research.unsw.edu.au/projects/unsw-nb15-dataset). The downloaded training/testing CSV names, schemas and observed counts match the provider description. The experiment was local, not a deployment validation.
 
 | Field | Recorded observation |
 | --- | --- |
 | Execution timestamp (UTC) | 2026-11-18T22:12:10.975945+00:00 |
-| Experiment source | User-uploaded OneDrive ZIP; separate provider-byte verification pending |
+| Experiment source | Official UNSW Research dataset webpage → institutional SharePoint/OneDrive link → local CSV copies |
 | Base source commit | `5bfa8f46a6caf8f0410312b7c20015b35ee01cb0` |
 | Python | 3.13.5 |
 | scikit-learn | 1.8.0 |

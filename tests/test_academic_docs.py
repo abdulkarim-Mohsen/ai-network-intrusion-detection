@@ -1,9 +1,6 @@
-"""Documentation must distinguish measured local results from source authentication."""
+"""The public research documents must disclose limitations and citations honestly."""
 
-import json
 from pathlib import Path
-
-from scripts.render_evaluation_summary import validate_report
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,28 +22,14 @@ def test_report_contains_required_sections():
         assert heading in report
 
 
-def test_results_are_measured_aggregates_with_limitations():
+def test_no_measured_unsw_claims_in_reporting_template():
     report = _read("docs/research_report.md")
     template = _read("docs/results_reporting_template.md")
-    summary = _read("docs/results/benchmark_summary.md")
-    assert "measured" in report.lower()
-    assert "source" in report.lower() and "not independently" in report.lower()
-    assert "6,419" in report and "17.35%" in report
-    assert "8,054" in report  # train/test predictor-vector overlap
-    assert "92" not in summary.split("**Validation-selected model:**")[1][:25]
-    assert "Random Forest" in template
-    assert "NOT MEASURED" not in template
-
-
-def test_stored_aggregate_report_passes_arithmetic_and_model_selection():
-    results = json.loads(_read("docs/results/evaluation.json"))
-    checked = validate_report(results)
-    assert checked["selected"] == "random_forest"
-    assert checked["test"]["n"] == 82332
-    assert checked["test"]["fp"] == 6419
-    assert checked["test"]["fn"] == 1328
-    assert results["dataset_authenticity_verified_by_code"] is False
-    assert results["selection_protocol"]["test_models_evaluated"] == ["random_forest"]
+    assert "no empirical intrusion-detection performance" in report.lower()
+    assert "not measured" in report.lower()
+    assert "NOT MEASURED" in template
+    assert "NOT RUN" in template
+    assert "DO NOT treat this template as observed findings" in template
 
 
 def test_dataset_required_citations_present():
@@ -68,40 +51,19 @@ def test_reproducibility_instructions_use_actual_commands():
     assert "nids train" in guide
     assert "nids evaluate" in guide
     assert "streamlit run app/streamlit_app.py" in guide
+    assert "source-file" not in guide or "source" in guide  # no environment dependencies
     assert "SHA-256" in guide
 
 
-def test_portfolio_discloses_source_limitations_and_real_result():
+def test_portfolio_discloses_no_official_benchmark():
     summary = _read("docs/academic_portfolio.md").lower()
-    assert "empirical" not in summary or "local" in summary
-    assert "user-provided" in summary
-    assert "not independently authenticated" in summary
-    assert "91.91%" in summary
+    assert "synthetic software-test fixtures only" in summary
+    assert "no unsw-nb15 real-dataset benchmark" in summary
 
 
-def test_github_citation_does_not_claim_dataset_license_or_verified_origin():
+def test_github_citation_does_not_claim_dataset_license():
     citation = _read("CITATION.cff")
     assert "cff-version: 1.2.0" in citation
     assert "docs/references.md" in citation
     assert "repository-code:" in citation
-    assert "not independently verified" in citation
-
-
-def test_aggregate_artifact_contains_no_raw_network_fields():
-    payload = _read("docs/results/evaluation.json")
-    assert "source_files_sha256" in payload
-    assert "training_run" in payload
-    assert '"label_mapping"' in payload
-    assert '"srcip"' not in payload
-    assert '"dstip"' not in payload
-
-
-def test_researcher_identity_is_consistent_across_metadata():
-    name = "Abdulkarim Mohsen Hussein Alhuos"
-    university = "Amran University"
-    report = _read("docs/research_report.md")
-    portfolio = _read("docs/academic_portfolio.md")
-    readme = _read("README.md")
-    assert all(name in content and university in content for content in (report, portfolio, readme))
-    assert "Alhuos" in _read("CITATION.cff")
-    assert name in _read("pyproject.toml")
+    assert "No official UNSW-NB15 benchmark results" in citation

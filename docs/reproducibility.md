@@ -2,7 +2,7 @@
 
 ## Status and system boundary
 
-An actual offline benchmark was conducted on 2026-11-18 (UTC) using **user-provided UNSW-NB15-layout CSVs**. Their byte provenance was not independently authenticated. Original data are **not** included in the repository; public aggregate outputs are in [results/](results/README.md). Reproducibility of unit tests is distinct from independent scientific replication of this empirical run.
+An actual offline benchmark was conducted on 2026-11-18 (UTC) using UNSW-NB15 CSVs downloaded through the official UNSW dataset webpage's university-hosted SharePoint/OneDrive link. Raw CSVs are not in GitHub; aggregate outputs are in [results/](results/README.md). Software tests are distinct from independent scientific replication.
 
 ## 1. Prepare an isolated environment
 
@@ -37,7 +37,7 @@ data/raw/UNSW_NB15_training-set.csv
 data/raw/UNSW_NB15_testing-set.csv
 ```
 
-Do not download the data from unverified mirrors, merge the official partitions, or commit raw records. Check file identity and provenance outside the code (the code cannot authenticate origin), and retain a local source/access note. The official webpage reports 175,341 training and 82,332 test rows; compare the observed counts **after** inspection without assuming they must always match.
+Follow the [official UNSW-NB15 dataset page](https://research.unsw.edu.au/projects/unsw-nb15-dataset)'s university-hosted repository link, not an arbitrary mirror. Keep the source URL/date and local SHA-256 digests. A hash identifies the local copy, and a publisher-issued reference digest (if provided) enables an additional byte-for-byte comparison. Do not merge official partitions or commit the original CSVs.
 
 ## 3. Execute the *actual* offline experiment
 
@@ -53,21 +53,21 @@ Commands use no live network detection or scanning. The evaluation command **ref
 
 ### Optional: create a consistency-checked academic summary
 
-After the `nids evaluate` command has produced `evaluation.json` from locally obtained and separately authenticated provider files, run:
+After the `nids evaluate` command has produced `evaluation.json` from official-link UNSW dataset copies, run:
 
 ```bash
 python -m scripts.render_evaluation_summary --input artifacts/reports/evaluation.json --output artifacts/reports/benchmark_summary.md
 ```
 
-This checks whether each confusion matrix and derived binary metrics agree before rendering *only those observed aggregate results*. The report explicitly warns that input file provenance cannot be authenticated by software. See [benchmark execution steps](benchmark_execution.md).
+This checks whether each confusion matrix and derived binary metrics agree before rendering *only those observed aggregate results*. The report documents the official-link provenance and the limits of local checksums. See [benchmark execution steps](benchmark_execution.md).
 
 ## 4. Keep local evidence, not GitHub datasets
 
 | Local output | What it establishes | Limitation |
 | --- | --- | --- |
-| `artifacts/models/training_manifest.json` | Training settings, version metadata, class counts, SHA-256 input-file digests | Not predictive accuracy; hashes do not certify source authenticity |
+| `artifacts/models/training_manifest.json` | Training settings, version metadata, class counts, SHA-256 input-file digests | Not predictive accuracy; hashes identify copies but are not publisher reference digests |
 | `artifacts/models/*.joblib` | Trusted, locally trained serialized models | Never load untrusted models; not distributed |
-| `artifacts/reports/evaluation.json` | Validation metrics for both candidates, winner and held-out metrics for chosen model | Depends on correctly authenticated local files |
+| `artifacts/reports/evaluation.json` | Validation metrics for both candidates, winner and held-out metrics for chosen model | Depends on consistent local copies and documented official source |
 | `artifacts/reports/confusion_matrix.png` | Aggregate held-out TP/FP/TN/FN chart | Does not demonstrate deployment effectiveness |
 | `artifacts/reports/roc_curve.png` | ROC plot, only when both true classes are present | ROC-AUC can be undefined for a single-class partition |
 

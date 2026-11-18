@@ -4,7 +4,7 @@
   "created_at_utc": "2026-11-18T22:12:10.975945+00:00",
   "dataset": "Local CSVs using UNSW-NB15 official split filenames",
   "dataset_authenticity_verified_by_code": false,
-  "source_data_type": "user-supplied local files; verify provider provenance independently",
+  "source_data_type": "UNSW-NB15 CSVs downloaded via institutional SharePoint linked from official UNSW Research dataset page",
   "target": "label",
   "positive_class": 1,
   "class_mapping": {
