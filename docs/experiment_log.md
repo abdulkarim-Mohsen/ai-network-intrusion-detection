@@ -42,3 +42,10 @@
 - **Local `pip check`:** failed on a dependency conflict between unrelated installed `moviepy` and `pillow` packages in the shared runner environment. This is **not evidence of a project dependency failure**. The project CI uses a fresh Python environment and should be checked after the push.
 - **Last verified Phase 6 GitHub Actions:** [successful workflow run](https://github.com/abdulkarim-Mohsen/ai-network-intrusion-detection/actions/runs/44338575947). The Phase 7 run needs separate verification.
 - **Research benchmark:** not performed, with official CSV files absent. No model performance metrics exist.
+
+## 2026-11-19 — Empirical access and report-export work
+
+- Reconfirmed UNSW's public academic-use and five-reference requirements; the original file-download link redirects to Microsoft sign-in in the available browser environment.
+- The provider's dataset CSVs could not be downloaded, and no UNSW-NB15 benchmark run took place.
+- Added an aggregate-only report generator with arithmetic consistency tests. Its tests use **synthetic fixtures** and cannot establish actual prediction quality.
+- Next action: acquire the provider's pre-split CSVs with the user, verify origin and observed row counts, run `nids evaluate`, then review the output and update the research manuscript.

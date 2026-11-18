@@ -1,7 +1,7 @@
 # AI-Based Network Intrusion Detection Using Machine Learning: A Reproducible Baseline Study
 
 **Research status:** Methods and software implemented; **official-dataset benchmark not yet conducted**  
-**Report version:** 2026-11-18 (documentation release)  
+**Report version:** 2026-11-19 (benchmark-access and reproducibility update)  
 **Repository:** https://github.com/abdulkarim-Mohsen/ai-network-intrusion-detection  
 **Study type:** Defensive, offline, supervised binary classification research
 
@@ -84,7 +84,7 @@ The codebase separates file loading, feature transformation, training, evaluatio
 | Held-out attack precision / recall / F1 | Not measured | Not measured | Final test run not performed |
 | Held-out FPR / FNR / ROC-AUC | Not measured | Not measured | Final test run not performed |
 
-A complete future empirical results table must identify the tested official files, their SHA-256 digests, model selection criterion, observed class counts, confusion matrix, runtime environment and exact commands. The report should not be updated to state that UNSW results exist until those steps actually occur. Use [results_reporting_template.md](results_reporting_template.md) for that future update.
+A complete future empirical results table must identify the tested official files, their SHA-256 digests, model selection criterion, observed class counts, confusion matrix, runtime environment and exact commands. The report should not be updated to state that UNSW results exist until those steps actually occur. Use [results_reporting_template.md](results_reporting_template.md) for that future update. A new tool, `python -m scripts.render_evaluation_summary`, can generate a locally stored aggregate Markdown summary from a consistent `evaluation.json` after a genuine run; it validates arithmetic but cannot authenticate source files. See [benchmark_execution.md](benchmark_execution.md) for the exact commands and the current official-download sign-in blocker.
 
 ## 6. Limitations and threats to validity
 

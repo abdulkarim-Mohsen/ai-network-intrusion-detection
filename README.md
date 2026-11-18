@@ -126,6 +126,18 @@ The research software and academic documentation are complete, **but empirical b
 
 To report real performance, obtain official files separately and run the training/evaluation steps above; insert only observed metrics and preserve the source provenance. Academic-use permissions and original dataset citations apply regardless of this project's MIT code license.
 
+## Completing the empirical benchmark (post-implementation)
+
+The original UNSW-NB15 download currently redirects to Microsoft sign-in in the available browsing environment, and no authorized CSVs were obtainable here. Therefore the real-dataset evaluation is still pending. When the files are accessible, follow [docs/benchmark_execution.md](docs/benchmark_execution.md) to run the offline benchmark and produce a local research-summary Markdown file. The new exporter performs arithmetic checks but **does not authenticate dataset origin** or invent performance metrics.
+
+```bash
+# Only after independently obtaining the two authorized pre-partitioned CSVs:
+nids evaluate --data-dir data/raw --output-dir artifacts/reports
+python -m scripts.render_evaluation_summary --input artifacts/reports/evaluation.json --output artifacts/reports/benchmark_summary.md
+```
+
+**No official performance results have been measured or committed.**
+
 ## References
 
 See the [curated academic bibliography](docs/references.md) and the [official UNSW-NB15 dataset source](https://research.unsw.edu.au/projects/unsw-nb15-dataset). For research using the dataset, the provider requires five specific academic papers—not only the first original-dataset paper. GitHub's **Cite this repository** control uses [CITATION.cff](CITATION.cff); dataset citations remain an additional requirement.

@@ -51,6 +51,16 @@ streamlit run app/streamlit_app.py
 
 Commands use no live network detection or scanning. The evaluation command **refits** its own baselines; it does not read joblib models created by `train`. Do not interpret the resulting test score as independent evidence if parameters were modified after seeing test outcomes.
 
+### Optional: create a consistency-checked academic summary
+
+After the `nids evaluate` command has produced `evaluation.json` from locally obtained and separately authenticated provider files, run:
+
+```bash
+python -m scripts.render_evaluation_summary --input artifacts/reports/evaluation.json --output artifacts/reports/benchmark_summary.md
+```
+
+This checks whether each confusion matrix and derived binary metrics agree before rendering *only those observed aggregate results*. The report explicitly warns that input file provenance cannot be authenticated by software. See [benchmark execution steps](benchmark_execution.md).
+
 ## 4. Keep local evidence, not GitHub datasets
 
 | Local output | What it establishes | Limitation |
