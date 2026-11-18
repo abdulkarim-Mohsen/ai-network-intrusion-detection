@@ -4,7 +4,7 @@
 
 The Streamlit application displays **only aggregated metrics from a local evaluation report**. It is not a real-time IDS, does not probe or capture network traffic, does not load serialized model objects, and does not upload or show raw flow records.
 
-The dashboard software was tested with **synthetic software-test fixtures only** as of 2026-11-18. No official UNSW-NB15 experiments have been performed for this project, so no measured benchmark accuracy or ROC-AUC is claimed.
+A real-data benchmark has now been run using the designated UNSW-NB15 train/test CSVs downloaded via the university-hosted SharePoint/OneDrive link on the [official UNSW Research page](https://research.unsw.edu.au/projects/unsw-nb15-dataset). The dashboard also has separate synthetic software tests. Previously recorded aggregate results are published under [docs/results/](results/README.md); this UI does not collect live network traffic.
 
 ## Installation and start
 
@@ -21,7 +21,7 @@ By default, it reads `artifacts/reports/evaluation.json` from the repository roo
 ### Running an authorized experiment before viewing it
 
 1. Obtain the two designated CSV files directly from the [official UNSW-NB15 dataset page](https://research.unsw.edu.au/projects/unsw-nb15-dataset) under its published research terms; do not redistribute the files in the repository.
-2. Verify their provenance and permitted use independently. The loader validates CSV schema, **not** provider authenticity.
+2. Follow the official webpage's link to the university-hosted SharePoint/OneDrive repository. The loader checks CSV structure but does not perform a reference-checksum comparison.
 3. Put the files in `data/raw/` (ignored by Git), and use the CLI:
 
 ```bash
@@ -55,7 +55,7 @@ Metrics and the confusion matrix come from the JSON report. The optional ROC plo
 - The schema and internal counts are checked before displaying results: both validation models must be present, selection must match the validation attack F1, and confusion counts, class supports, sample counts and defined rates must agree.
 - No pickle or joblib files are loaded. No upload widgets, sockets, packet sniffing, shell commands, or live scanners are present.
 - Raw samples, credentials and private network details must never be submitted to a publicly accessible Streamlit deployment. **Keep the dashboard local** unless a separate privacy and deployment review is completed.
-- SHA-256 hashes document which *local files* were used, but do not authenticate the dataset's provider or its license. The UI **always warns** that dataset authenticity was not verified by code.
+- A blue informational notice documents the official UNSW Research webpage and its institutional SharePoint/OneDrive download path. SHA-256 hashes identify the *local copies* used, but the dashboard cannot compare them with a publisher-issued reference checksum unless one is supplied. The note is not an error or a claim of third-party origin.
 - The test output is for **one selected model**, not a final test-set competition between models. Reusing the test to choose new hyperparameters compromises the research protocol.
 
 ## Validation and testing

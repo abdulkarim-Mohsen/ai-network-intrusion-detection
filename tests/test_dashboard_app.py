@@ -52,7 +52,12 @@ def test_valid_report_renders_both_validation_and_test_panels(monkeypatch, tmp_p
     }
     (tmp_path / "evaluation.json").write_text(json.dumps(report), encoding="utf-8")
     runpy.run_path(str(APP), run_name="__main__")
-    assert ui.warning.called  # dataset provenance warning
+    assert ui.info.called  # institutional dataset source is shown as an informational note
+    assert not ui.warning.called  # no yellow provenance warning for a valid report
+    source_note = ui.info.call_args.args[0]
+    assert "official UNSW Research dataset page" in source_note
+    assert "SharePoint/OneDrive" in source_note
+    assert "byte-for-byte" in source_note
     assert ui.dataframe.called
     assert ui.bar_chart.called
     assert ui.pyplot.called

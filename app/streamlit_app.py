@@ -46,10 +46,14 @@ def main() -> None:
         st.info("Re-run the offline evaluation into a clean reports folder; do not manually edit metric values.")
         return
 
-    st.warning(
-        "Dataset authenticity has NOT been verified by software. Results reflect the locally "
-        "supplied CSVs only. Verify dataset provenance and research permissions independently "
-        "before making academic benchmark claims."
+    st.info(
+        "**Dataset source:** UNSW-NB15 — University of New South Wales (UNSW). "
+        "The research CSVs were obtained via the "
+        "[official UNSW Research dataset page](https://research.unsw.edu.au/projects/unsw-nb15-dataset) "
+        "and its university-hosted SharePoint/OneDrive repository. "
+        "The results displayed here are from the designated training and testing CSVs. "
+        "File hashes identify the local copies; the dashboard does not perform an independent "
+        "byte-for-byte comparison with a publisher-issued reference checksum."
     )
     st.caption(f"Evaluation file timestamp (UTC): {snapshot.generated_at}")
     st.caption("Input SHA-256 hashes recorded: " + ("yes (not proof of provenance)" if snapshot.hashes_recorded else "not available"))
@@ -128,7 +132,7 @@ def main() -> None:
             "- Preprocessing is fitted only on the designated training subset.\n"
             "- Both classifiers are compared using attack-class F1 on the validation subset.\n"
             "- Only the validation-selected classifier is evaluated on the official-designated test subset.\n"
-            "- Source CSV authenticity is **not** validated by filename or file hash alone.\n"
+            "- The data were downloaded via UNSW's official Research webpage and institutional SharePoint link. Local SHA-256 hashes identify copies, but are not publisher-reference checksums.\n"
             "- No model deserialization, packet capture, network probing or raw-row viewing occurs here.\n"
             "- Static academic samples do not demonstrate real-world detection reliability."
         )
