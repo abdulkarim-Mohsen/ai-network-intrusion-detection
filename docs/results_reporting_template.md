@@ -1,48 +1,42 @@
-# Empirical Results Reporting Template (UNFILLED)
+# Empirical Results Record — Completed Local Benchmark
 
-> **DO NOT treat this template as observed findings.** Complete it only after independently verifying the official UNSW-NB15 download and actually running `nids evaluate` on those authorized files. Do not copy synthetic fixture scores from unit tests into this table.
+> **Provenance:** Measured on user-provided CSVs with UNSW-NB15 official-split filenames and matching record counts; independent provider-file authentication not established. Results from one local experiment; do not interpret as external deployment validation.
 
-## Experiment identity
-
-| Field | Actual value (to be recorded) |
+| Field | Recorded observation |
 | --- | --- |
-| Date/time of final evaluation (UTC) | NOT RUN |
-| Source provider and download/access details | NOT VERIFIED LOCALLY |
-| Git commit SHA | NOT RECORDED |
-| Python / NumPy / pandas / scikit-learn versions | NOT RECORDED |
-| Training CSV SHA-256 | NOT RECORDED |
-| Test CSV SHA-256 | NOT RECORDED |
-| Train / validation / held-out observed class counts | NOT MEASURED |
-| Seed and classifier parameters | See default protocol; confirm actual run flags |
+| Execution timestamp (UTC) | 2026-11-18T22:12:10.975945+00:00 |
+| Experiment source | User-uploaded OneDrive ZIP; separate provider-byte verification pending |
+| Base source commit | `5bfa8f46a6caf8f0410312b7c20015b35ee01cb0` |
+| Python | 3.13.5 |
+| scikit-learn | 1.8.0 |
+| Training CSV SHA-256 | `bec7dd5ec88dc2a0ccc7a07879d338395ed7421750f675fd0339e07dfe0648fa` |
+| Test CSV SHA-256 | `734fe6642edf758f7c94d7d9149426b49d202fe8e7bf0bef47392489c3c0a559` |
+| Fit / validation / held-out rows | 140,272 / 35,069 / 82,332 |
+| Seed / validation fraction / forest trees | 42 / 0.2 / 100 |
 
-## Validation-only model comparison
+## Validation model comparison
 
-| Validation metric | Logistic Regression | Random Forest |
-| --- | --- | --- |
-| Attack precision | NOT MEASURED | NOT MEASURED |
-| Attack recall | NOT MEASURED | NOT MEASURED |
-| Attack F1 (selection criterion) | NOT MEASURED | NOT MEASURED |
-| ROC-AUC (when defined) | NOT MEASURED | NOT MEASURED |
-| Class support | NOT MEASURED | NOT MEASURED |
+| Metric (validation only) | Logistic Regression | Random Forest |
+| --- | ---: | ---: |
+| Accuracy | 93.24% | 94.92% |
+| ROC-AUC | 98.44% | 99.28% |
+| False-positive rate | 10.65% | 4.98% |
+| Attack precision | 95.01% | 97.60% |
+| Attack recall | 95.06% | 94.88% |
+| Attack F1 | 95.03% | 96.22% |
 
-**Selected model by attack F1:** NOT DETERMINED.
+**Validation-selected baseline:** Random Forest (`random_forest`), using attack F1 only.
 
-## Held-out evaluation — selected model only
+## Final held-out test for selected Random Forest only
 
-| Field | Observation |
-| --- | --- |
-| Model name | NOT DETERMINED |
-| TN, FP, FN, TP | NOT MEASURED |
-| Attack precision | NOT MEASURED |
-| Attack recall | NOT MEASURED |
-| Attack F1 | NOT MEASURED |
-| Macro / weighted F1 | NOT MEASURED |
-| False-positive rate `FP/(FP+TN)` | NOT MEASURED |
-| False-negative rate `FN/(FN+TP)` | NOT MEASURED |
-| ROC-AUC or undefined reason | NOT MEASURED |
+| Metric | Observed |
+| --- | ---: |
+| TN / FP / FN / TP | 30,581 / 6,419 / 1,328 / 44,004 |
+| Attack precision | 87.27% |
+| Attack recall | 97.07% |
+| Attack F1 | 91.91% |
+| FPR | 17.35% |
+| FNR | 2.93% |
+| ROC-AUC | 98.46% |
 
-The repository intentionally does **not** calculate final test metrics for both candidates. A validation-only comparison is appropriate; selecting a new winner using the held-out test is not.
-
-## Interpretation and limitations (complete with verified evidence)
-
-Describe the observed class balance and false-alarm burden, dataset-split dependence, dataset authenticity verification, whether the reported scope is limited to synthetic testbed flows, and which conclusions **cannot** be drawn about live networks.
+Post-hoc audit: 8,054 of 82,332 test rows matched a fitted-row predictor fingerprint, suggesting possible optimistic bias. Full reproducibility metadata and all computed values are available in [aggregate evaluation JSON](results/evaluation.json) and the [research report](research_report.md).

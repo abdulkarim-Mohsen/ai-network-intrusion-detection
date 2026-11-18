@@ -2,7 +2,11 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-> **Status: Phase 7 — research documentation and software implementation complete; empirical benchmarking pending.** The source code, academic report, reproducibility guide and testing infrastructure are available. Tests use synthetic fixtures only. We have **not downloaded or evaluated official UNSW records**, so there are **no reportable detection-performance measurements**. The dashboard shows an honest empty state until a locally generated evaluation report exists.
+> **Status: seven implementation stages complete, plus one local empirical run on user-supplied UNSW-NB15-layout data.** Random Forest was selected by validation attack F1; it achieved **91.91% attack F1** and **17.35% false-positive rate** on the supplied held-out test file. **Dataset-byte authenticity was not independently verified.** Predictor-vector duplicates across splits raise possible optimism; this is not a deployment-ready IDS. Original CSVs and models are excluded from GitHub.
+
+**Researcher:** Abdulkarim Mohsen Hussein Alhuos  
+**Affiliation:** College of Engineering and Information Technology, Amran University  
+**Field:** Cybersecurity and Networks
 
 ## Project Overview
 
@@ -25,7 +29,7 @@ Network intrusion detection requires distinguishing suspicious activity from ord
 
 **Dataset chosen:** UNSW-NB15. Its [official research page](https://research.unsw.edu.au/projects/unsw-nb15-dataset) grants academic-research use, retains the authors' copyright, requires citations to five papers, and states that commercial use needs author agreement. The data are **not bundled, mirrored, or MIT licensed**. Instructions and attribution: [docs/dataset.md](docs/dataset.md).
 
-Implemented in Phase 2: offline reading and schema validation of the provider-named CSVs; stratified training/validation split only within the official training portion; exclusion of `id`, `attack_cat`, and `label`; and an **unfitted** `ColumnTransformer` for numeric median imputation/scaling and categorical mode imputation/one-hot encoding. **Phase 3 now fits it independently in each training-only model pipeline.** No official files have been processed yet. The held-out official test partition is not used for training or model selection.
+Implemented in Phase 2: offline reading and schema validation of the provider-named CSVs; stratified training/validation split only within the official training portion; exclusion of `id`, `attack_cat`, and `label`; and an **unfitted** `ColumnTransformer` for numeric median imputation/scaling and categorical mode imputation/one-hot encoding. **Phase 3 now fits it independently in each training-only model pipeline.** User-provided UNSW-NB15-layout files were processed for a single local empirical benchmark; source authenticity was not independently established. The held-out official test partition is not used for training or model selection.
 
 ## System Architecture
 
@@ -98,45 +102,50 @@ Phase 6 runs source compilation, a basic CLI smoke test, pytest with a **90% min
 
 ## Model Evaluation
 
-**Implemented, not run on official data.** Phase 4 computes validation metrics for both baselines and selects a winner using *positive-class validation F1*. Only this preselected model is scored against the held-out provider testing split. Reported fields include class-wise precision/recall/F1, class support, 2×2 confusion matrix, false-positive rate `FP/(TN+FP)`, false-negative rate, macro/weighted F1, and ROC-AUC (set to `null` with an explanation if the true labels contain one class). Output PNGs contain only aggregate figures. See [evaluation protocol](docs/evaluation.md).
+**Implemented and executed once on the user-supplied dataset.** Phase 4 computes validation metrics for both baselines and selects a winner using *positive-class validation F1*. Only this preselected model is scored against the held-out provider testing split. Reported fields include class-wise precision/recall/F1, class support, 2×2 confusion matrix, false-positive rate `FP/(TN+FP)`, false-negative rate, macro/weighted F1, and ROC-AUC (set to `null` with an explanation if the true labels contain one class). Output PNGs contain only aggregate figures. See [evaluation protocol](docs/evaluation.md).
 
 ## Results and Limitations
 
-**No numerical model results on real UNSW data are available at Phase 7.** Synthetic unit tests exercise the metrics and end-to-end evaluation pipeline, but their outputs are *not scientific benchmark scores*. The repository is not an operational detection system. UNSW permits academic research under attribution conditions; actual row distributions and predictive performance await authorized local-data inspection and experimentation. Training on a static academic dataset will not demonstrate reliable real-world generalization or suitability for deployment.
+**One measured local benchmark** was completed on user-supplied CSVs named for the UNSW-NB15 train/test partitions. The files matched the documented row counts and 45-column schema but were **not independently authenticated** against provider-distributed bytes. Only the selected model was scored on held-out test data.
+
+| Metric (validation only) | Logistic Regression | Random Forest |
+| --- | ---: | ---: |
+| Accuracy | 93.24% | 94.92% |
+| ROC-AUC | 98.44% | 99.28% |
+| False-positive rate | 10.65% | 4.98% |
+| Attack precision | 95.01% | 97.60% |
+| Attack recall | 95.06% | 94.88% |
+| Attack F1 | 95.03% | 96.22% |
+
+**Selected model:** Random Forest, by validation attack F1. **Held-out test (82,332 rows):** accuracy **90.59%**, attack precision **87.27%**, attack recall **97.07%**, attack F1 **91.91%**, ROC-AUC **98.46%**, and FPR **17.35%** (6,419 false alarms among 37,000 normal records). Confusion matrix: TN=30,581, FP=6,419, FN=1,328, TP=44,004.
+
+**Critical caveat:** 8,054 test records and 16,342 validation records match predictor-vector fingerprints in the fitting subset. This indicates non-independent feature patterns and possible optimistic benchmark performance. No retuning was performed after looking at the final test scores. A static research dataset cannot establish live network reliability.
+
+- [Complete empirical research report](docs/research_report.md)
+- [Measured aggregate JSON](docs/results/evaluation.json) (no raw rows)
+- [Validated result summary](docs/results/benchmark_summary.md)
+- [Post-hoc overlap audit](docs/results/dataset_overlap_audit.json)
+- [Data-access and reproduction instructions](docs/benchmark_execution.md)
 
 ## Future Improvements
 
-- Obtain official data locally under UNSW academic-use terms and inspect source distributions (Phase 2 file validation).
-- Run the implemented reproducible baseline training on permitted official local data and record manifest hashes (Phase 3 operational run).
-- Run Phase 4 evaluation on authorized, verified official CSVs exactly once after model selection; add its actual measurements to the report.
-- Run the implemented offline dashboard on results from authorized, independently verified academic data (Phase 5 implemented; real-data run pending).
-- Maintain the Phase 6 CI quality checks (Python 3.11/3.12, dependency consistency, tracked-file hygiene, >=90% code coverage). See [quality assurance](docs/quality_assurance.md).
-- Complete the **empirical section** of the Phase 7 research report only after official data are independently verified and evaluated; do not invent figures.
+- Independently verify the CSV bytes against the provider's official data and cite all five required publications.
+- Pre-register and perform a **new** leakage-resistant, source-aware deduplicated experiment; do not retune using the current held-out test and call it an unbiased first test.
+- Replicate on additional datasets or separated recording sessions; assess model calibration and alert-volume costs.
+- Improve operational relevance while keeping the prototype offline, defensive and privacy-preserving.
+- Maintain Python 3.11/3.12 CI coverage and dependencies; record the Python 3.13.5 experiment environment separately.
 
-## Academic Documentation (Phase 7)
+## Academic Documentation (Phase 7 + empirical follow-up)
 
-The research software and academic documentation are complete, **but empirical benchmark results remain pending official-data acquisition**:
+The research software, citations, and empirical manuscript are available. Scientific statements are limited to the measured local run, with documented source-provenance and predictor-duplication limitations. The README and portfolio describe a research prototype, **not a certified or published IDS**.
 
-- [Research report](docs/research_report.md) — abstract, problem, methods, metrics, explicitly unmeasured results, limitations and conclusion.
-- [Reproducibility guide](docs/reproducibility.md) — environment, official data, exact commands, artifact hashes, reporting procedure.
-- [Verified references](docs/references.md) — includes **all five** publications requested by the UNSW dataset provider.
-- [Model card](docs/model_card.md) — intended/off-limits uses, assumptions and validation status.
-- [Results reporting template](docs/results_reporting_template.md) — intentionally empty until a legitimate test run.
-- [Academic portfolio summary](docs/academic_portfolio.md) — bounded, verifiable statement of implemented work for applications.
+- [Research report](docs/research_report.md)
+- [Reproducibility guide](docs/reproducibility.md)
+- [Verified reference bibliography](docs/references.md)
+- [Model card](docs/model_card.md)
+- [Recorded measured results](docs/results_reporting_template.md)
+- [Academic portfolio summary](docs/academic_portfolio.md)
 
-To report real performance, obtain official files separately and run the training/evaluation steps above; insert only observed metrics and preserve the source provenance. Academic-use permissions and original dataset citations apply regardless of this project's MIT code license.
-
-## Completing the empirical benchmark (post-implementation)
-
-The original UNSW-NB15 download currently redirects to Microsoft sign-in in the available browsing environment, and no authorized CSVs were obtainable here. Therefore the real-dataset evaluation is still pending. When the files are accessible, follow [docs/benchmark_execution.md](docs/benchmark_execution.md) to run the offline benchmark and produce a local research-summary Markdown file. The new exporter performs arithmetic checks but **does not authenticate dataset origin** or invent performance metrics.
-
-```bash
-# Only after independently obtaining the two authorized pre-partitioned CSVs:
-nids evaluate --data-dir data/raw --output-dir artifacts/reports
-python -m scripts.render_evaluation_summary --input artifacts/reports/evaluation.json --output artifacts/reports/benchmark_summary.md
-```
-
-**No official performance results have been measured or committed.**
 
 ## References
 

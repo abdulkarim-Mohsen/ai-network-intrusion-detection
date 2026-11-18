@@ -2,15 +2,20 @@
 
 ## AI-Based Network Intrusion Detection Using Machine Learning
 
-**Type:** Defensive cybersecurity / applied machine learning research software  
+**Researcher:** Abdulkarim Mohsen Hussein Alhuos  
+**University:** Amran University  
+**Faculty:** College of Engineering and Information Technology  
+**Specialization:** Cybersecurity and Networks  
+
+**Project type:** Defensive cybersecurity + applied machine learning / reproducible offline research prototype  
 **Repository:** https://github.com/abdulkarim-Mohsen/ai-network-intrusion-detection
 
-**Project description.** Developed a structured Python research prototype for comparing Logistic Regression and Random Forest on *authorized academic network-flow records*. The software includes local dataset/schema validation, leakage-aware training-only preprocessing, deterministic model baselines, validation-only model selection, held-out metrics, a read-only Streamlit dashboard, unit/integration tests, and Python 3.11/3.12 continuous integration.
+**Implementation:** Developed Python code to validate local academic network-flow data, avoid preprocessing leakage, compare Logistic Regression against Random Forest on stratified validation, evaluate the selected model on a held-out dataset, and render aggregate plots and a Streamlit dashboard. GitHub Actions enforces unit tests, dependency sanity and minimum 90% statement coverage on Python 3.11/3.12.
 
-**Demonstrable engineering work.** Source-controlled modules and documentation, automated test quality gates (minimum 90% source coverage), checks against accidentally committing private datasets or secrets, and explicit preservation of dataset-provider terms and citations. Reproducibility metadata includes a fixed seed, installed software versions, configuration, class counts and file hashes when genuine local experiments are executed.
+**Measured local research result:** A single completed benchmark on *user-provided files named for UNSW-NB15 designated partitions* selected Random Forest by attack validation F1 (96.22%); on the 82,332-row held-out test it achieved 91.91% attack F1 and 17.35% FPR. **UNSW file bytes were not independently authenticated.** Model selection and final evaluation were distinct, but a post-hoc feature-fingerprint audit found 8,054 test records matching fitted predictor vectors, raising a substantial independence limitation.
 
-**Research-integrity statement.** As of the documentation release, verification has used **synthetic software-test fixtures only**; **no UNSW-NB15 real-dataset benchmark or empirical detection performance is claimed**. This is suitable for explaining an implemented research methodology and software engineering skills, but it should not be described as a published or experimentally validated detection algorithm.
+**Research integrity:** This is an implemented, evaluated academic *prototype*, **not** a peer-reviewed contribution or a validated production intrusion-detection system. The results are specific to one local split and must not be presented as external generalization. Only aggregate results are published; datasets and model binaries are kept out of the repository.
 
-**Future empirical milestone.** Independently obtain official UNSW-NB15 CSVs under UNSW's academic-use conditions, run the existing leakage-aware pipeline, document measured precision/recall/F1, ROC-AUC, false-positive and false-negative rates, and discuss generalization limitations.
+**Next research directions:** independently verify provider dataset file bytes, prespecify a group- or time-aware deduplicated protocol on a new holdout, compare baseline stability and false alert burden, and replicate on independent authorized data.
 
-For details, see [research report](research_report.md), [reproducibility instructions](reproducibility.md) and [model card](model_card.md).
+See the [research report](research_report.md), [aggregate results](results/README.md), [model card](model_card.md), and [bibliography](references.md).

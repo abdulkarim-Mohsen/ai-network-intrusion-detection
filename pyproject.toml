@@ -9,7 +9,7 @@ description = "Reproducible, offline machine-learning research for network intru
 readme = "README.md"
 requires-python = ">=3.10"
 license = {file = "LICENSE"}
-authors = [{name = "Project contributors"}]
+authors = [{name = "Abdulkarim Mohsen Hussein Alhuos"}]
 dependencies = [
     "numpy>=1.26,<3",
     "pandas>=2.2,<3",

@@ -1,0 +1,309 @@
+{
+  "status": "evaluation_completed",
+  "phase": 4,
+  "created_at_utc": "2026-11-18T22:12:10.975945+00:00",
+  "dataset": "Local CSVs using UNSW-NB15 official split filenames",
+  "dataset_authenticity_verified_by_code": false,
+  "source_data_type": "user-supplied local files; verify provider provenance independently",
+  "target": "label",
+  "positive_class": 1,
+  "class_mapping": {
+    "0": "normal",
+    "1": "attack"
+  },
+  "selection_protocol": {
+    "metric": "validation_positive_class_f1",
+    "selection_data": "stratified validation subset of provider training partition",
+    "tie_break": "logistic_regression wins a tie",
+    "test_predictions_or_metrics_before_selection": false,
+    "test_models_evaluated": [
+      "random_forest"
+    ],
+    "threshold": "classifier.predict default decision rule"
+  },
+  "training_run": {
+    "stage": "phase3_training",
+    "created_at_utc": "2026-11-18T22:12:08.532113+00:00",
+    "target": "label",
+    "positive_class": 1,
+    "dataset": "UNSW-NB15 (provider-defined training/testing CSV partitions)",
+    "training_config": {
+      "seed": 42,
+      "validation_fraction": 0.2,
+      "logistic_max_iter": 1000,
+      "forest_trees": 100
+    },
+    "training_rows": 140272,
+    "validation_rows": 35069,
+    "official_test_rows": 82332,
+    "training_label_counts": {
+      "0": 44800,
+      "1": 95472
+    },
+    "validation_label_counts": {
+      "0": 11200,
+      "1": 23869
+    },
+    "feature_names": [
+      "dur",
+      "proto",
+      "service",
+      "state",
+      "spkts",
+      "dpkts",
+      "sbytes",
+      "dbytes",
+      "rate",
+      "sttl",
+      "dttl",
+      "sload",
+      "dload",
+      "sloss",
+      "dloss",
+      "sinpkt",
+      "dinpkt",
+      "sjit",
+      "djit",
+      "swin",
+      "stcpb",
+      "dtcpb",
+      "dwin",
+      "tcprtt",
+      "synack",
+      "ackdat",
+      "smean",
+      "dmean",
+      "trans_depth",
+      "response_body_len",
+      "ct_srv_src",
+      "ct_state_ttl",
+      "ct_dst_ltm",
+      "ct_src_dport_ltm",
+      "ct_dst_sport_ltm",
+      "ct_dst_src_ltm",
+      "is_ftp_login",
+      "ct_ftp_cmd",
+      "ct_flw_http_mthd",
+      "ct_src_ltm",
+      "ct_srv_dst",
+      "is_sm_ips_ports"
+    ],
+    "excluded_features": [
+      "id",
+      "attack_cat",
+      "label"
+    ],
+    "models": {
+      "logistic_regression": {
+        "classifier": "LogisticRegression",
+        "parameters": {
+          "C": 1.0,
+          "class_weight": "balanced",
+          "dual": false,
+          "fit_intercept": true,
+          "intercept_scaling": 1,
+          "l1_ratio": 0.0,
+          "max_iter": 1000,
+          "n_jobs": null,
+          "penalty": "deprecated",
+          "random_state": 42,
+          "solver": "lbfgs",
+          "tol": 0.0001,
+          "verbose": 0,
+          "warm_start": false
+        }
+      },
+      "random_forest": {
+        "classifier": "RandomForestClassifier",
+        "parameters": {
+          "bootstrap": true,
+          "ccp_alpha": 0.0,
+          "class_weight": "balanced_subsample",
+          "criterion": "gini",
+          "max_depth": 18,
+          "max_features": "sqrt",
+          "max_leaf_nodes": null,
+          "max_samples": null,
+          "min_impurity_decrease": 0.0,
+          "min_samples_leaf": 2,
+          "min_samples_split": 2,
+          "min_weight_fraction_leaf": 0.0,
+          "monotonic_cst": null,
+          "n_estimators": 100,
+          "n_jobs": 1,
+          "oob_score": false,
+          "random_state": 42,
+          "verbose": 0,
+          "warm_start": false
+        }
+      }
+    },
+    "environment": {
+      "python": "3.13.5",
+      "numpy": "2.3.5",
+      "pandas": "2.2.3",
+      "scikit_learn": "1.8.0",
+      "joblib": "1.5.3"
+    },
+    "official_test_used_in_training": false,
+    "validation_used_in_training": false,
+    "held_out_evaluation_performed": false,
+    "validation_metrics_computed": false,
+    "measured_model_performance": null,
+    "status": "fitted_models_without_evaluation"
+  },
+  "validation": {
+    "logistic_regression": {
+      "sample_count": 35069,
+      "class_counts": {
+        "0": 11200,
+        "1": 23869
+      },
+      "label_mapping": {
+        "0": "normal",
+        "1": "attack"
+      },
+      "confusion_matrix": [
+        [
+          10007,
+          1193
+        ],
+        [
+          1178,
+          22691
+        ]
+      ],
+      "confusion_matrix_convention": "rows=true, columns=predicted; order=[0,1]",
+      "true_negatives": 10007,
+      "false_positives": 1193,
+      "false_negatives": 1178,
+      "true_positives": 22691,
+      "accuracy": 0.9323904302945621,
+      "per_class": {
+        "0": {
+          "precision": 0.8946803755029057,
+          "recall": 0.8934821428571429,
+          "f1": 0.8940808577172213,
+          "support": 11200
+        },
+        "1": {
+          "precision": 0.9500502428403953,
+          "recall": 0.9506472830868491,
+          "f1": 0.9503486691935585,
+          "support": 23869
+        }
+      },
+      "macro_f1": 0.9222147634553899,
+      "weighted_f1": 0.932378396629899,
+      "false_positive_rate": 0.10651785714285714,
+      "false_negative_rate": 0.04935271691315095,
+      "roc_auc": 0.9844226559554234,
+      "roc_auc_note": null
+    },
+    "random_forest": {
+      "sample_count": 35069,
+      "class_counts": {
+        "0": 11200,
+        "1": 23869
+      },
+      "label_mapping": {
+        "0": "normal",
+        "1": "attack"
+      },
+      "confusion_matrix": [
+        [
+          10642,
+          558
+        ],
+        [
+          1223,
+          22646
+        ]
+      ],
+      "confusion_matrix_convention": "rows=true, columns=predicted; order=[0,1]",
+      "true_negatives": 10642,
+      "false_positives": 558,
+      "false_negatives": 1223,
+      "true_positives": 22646,
+      "accuracy": 0.94921440588554,
+      "per_class": {
+        "0": {
+          "precision": 0.8969237252423093,
+          "recall": 0.9501785714285714,
+          "f1": 0.92278343810969,
+          "support": 11200
+        },
+        "1": {
+          "precision": 0.9759524219962076,
+          "recall": 0.9487619925426285,
+          "f1": 0.9621651477492406,
+          "support": 23869
+        }
+      },
+      "macro_f1": 0.9424742929294653,
+      "weighted_f1": 0.9495877960151458,
+      "false_positive_rate": 0.04982142857142857,
+      "false_negative_rate": 0.05123800745737148,
+      "roc_auc": 0.9928302250977059,
+      "roc_auc_note": null
+    }
+  },
+  "selected_model": "random_forest",
+  "official_test_selected_model": {
+    "sample_count": 82332,
+    "class_counts": {
+      "0": 37000,
+      "1": 45332
+    },
+    "label_mapping": {
+      "0": "normal",
+      "1": "attack"
+    },
+    "confusion_matrix": [
+      [
+        30581,
+        6419
+      ],
+      [
+        1328,
+        44004
+      ]
+    ],
+    "confusion_matrix_convention": "rows=true, columns=predicted; order=[0,1]",
+    "true_negatives": 30581,
+    "false_positives": 6419,
+    "false_negatives": 1328,
+    "true_positives": 44004,
+    "accuracy": 0.9059053587912355,
+    "per_class": {
+      "0": {
+        "precision": 0.9583816478109625,
+        "recall": 0.8265135135135135,
+        "f1": 0.8875763688342597,
+        "support": 37000
+      },
+      "1": {
+        "precision": 0.8726969835194257,
+        "recall": 0.970705020735904,
+        "f1": 0.9190956085844081,
+        "support": 45332
+      }
+    },
+    "macro_f1": 0.903335988709334,
+    "weighted_f1": 0.9049308625469562,
+    "false_positive_rate": 0.17348648648648649,
+    "false_negative_rate": 0.029294979264096004,
+    "roc_auc": 0.9846070489553349,
+    "roc_auc_note": null
+  },
+  "limitations": [
+    "Test scores are valid only for the files supplied by the user; filenames do not authenticate origin.",
+    "A static academic split does not establish real-world deployment performance.",
+    "Selecting or tuning further on these held-out scores would compromise an unbiased final evaluation.",
+    "Class support and false-positive rate must accompany precision and recall."
+  ],
+  "source_files_sha256": {
+    "UNSW_NB15_training-set.csv": "bec7dd5ec88dc2a0ccc7a07879d338395ed7421750f675fd0339e07dfe0648fa",
+    "UNSW_NB15_testing-set.csv": "734fe6642edf758f7c94d7d9149426b49d202fe8e7bf0bef47392489c3c0a559"
+  }
+}

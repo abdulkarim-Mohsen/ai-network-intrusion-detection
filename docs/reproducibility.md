@@ -2,7 +2,7 @@
 
 ## Status and system boundary
 
-The repository implements the offline software workflow, but **no official UNSW-NB15 benchmark has been executed** as of 2026-11-18. Real dataset files are intentionally not included. Reproducibility of *software tests* is separate from reproducibility of *research results*.
+An actual offline benchmark was conducted on 2026-11-18 (UTC) using **user-provided UNSW-NB15-layout CSVs**. Their byte provenance was not independently authenticated. Original data are **not** included in the repository; public aggregate outputs are in [results/](results/README.md). Reproducibility of unit tests is distinct from independent scientific replication of this empirical run.
 
 ## 1. Prepare an isolated environment
 
@@ -75,14 +75,14 @@ All generated models and report files are deliberately Git-ignored. Do not publi
 
 ## 5. Complete the research manuscript **after** verification
 
-Only after obtaining official files and successfully running the final evaluation:
+The published local experiment has been completed once; for *independent verification* of this result:
 
 1. Record the date, commit SHA, official source URL, access conditions, real row counts and class distributions.
 2. Preserve the CLI command lines, package version snapshot and SHA-256 source digests.
 3. Copy the actual aggregate metric values from `evaluation.json`; confirm the confusion matrix sums to the reported held-out sample count.
 4. State which model won on **validation attack F1** and clearly distinguish validation comparisons from **the chosen model's single final test score**.
 5. Explain false-positive and false-negative operational implications, class imbalance, label provenance, and realistic external-validity limitations.
-6. Insert only the measured figures into [results_reporting_template.md](results_reporting_template.md), then update [research_report.md](research_report.md) to match. Do not fabricate or extrapolate the results.
+6. Cross-check the already recorded metrics in [results_reporting_template.md](results_reporting_template.md) with the [measured evaluation JSON](results/evaluation.json) and [research report](research_report.md). Do not fabricate or extrapolate results.
 7. Keep any citations required by UNSW; see [references.md](references.md).
 
 ## 6. Known reproducibility limitations

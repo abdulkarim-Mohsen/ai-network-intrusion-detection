@@ -55,7 +55,7 @@ The `pip check` result applies to **the current environment**, including unrelat
 
 - Code and tests are intended to run without external datasets.
 - A passing unit-test suite confirms internal program behavior on controlled synthetic inputs, **not** the scientific efficacy of an IDS.
-- Running Streamlit in a browser and benchmarking on authorized official UNSW records remain separate validations; do not claim either until performed.
+- Running Streamlit in a browser remains unverified. A measured offline benchmark has since been performed on user-provided UNSW-NB15-format files, without independent verification of source bytes; that empirical result is distinct from CI code-quality checks.
 
 
 ## Public evidence and Phase 7 update

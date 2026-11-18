@@ -59,7 +59,7 @@ ai-network-intrusion-detection/
 | `dashboard.py` | Local `evaluation.json` | Validated aggregate dashboard snapshot |
 | `app/streamlit_app.py` | Local, non-sensitive results | Read-only model comparison view |
 
-**Status:** Dataset loading (Phase 2), model training (Phase 3), selected-model held-out evaluation (Phase 4), read-only dashboard (Phase 5), CI quality gates (Phase 6), and academic research documentation (Phase 7) are implemented and tested with synthetic fixtures. No official UNSW records have been processed and no real benchmark has been measured. See [training protocol](training.md), [evaluation protocol](evaluation.md), and [dashboard guide](dashboard.md).
+**Status:** Dataset loading (Phase 2), model training (Phase 3), selected-model held-out evaluation (Phase 4), read-only dashboard (Phase 5), CI quality gates (Phase 6), and academic research documentation (Phase 7) are implemented and tested with synthetic fixtures. One real local benchmark has since been run on user-supplied UNSW-NB15-layout records (source bytes not independently authenticated); see [aggregate results](results/README.md). See [training protocol](training.md), [evaluation protocol](evaluation.md), and [dashboard guide](dashboard.md).
 
 ## Local directory convention
 

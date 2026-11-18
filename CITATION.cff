@@ -3,8 +3,10 @@ message: "If you use this research software, cite this repository and credit the
 title: "AI-Based Network Intrusion Detection Using Machine Learning"
 type: software
 authors:
-  - name: "AI Network Intrusion Detection Project Contributors"
+  - family-names: "Alhuos"
+    given-names: "Abdulkarim Mohsen Hussein"
+    affiliation: "College of Engineering and Information Technology, Amran University"
 repository-code: "https://github.com/abdulkarim-Mohsen/ai-network-intrusion-detection"
 url: "https://github.com/abdulkarim-Mohsen/ai-network-intrusion-detection"
 license: MIT
-abstract: "Offline defensive research software implementing leakage-aware machine-learning baselines for authorized academic network-flow data. No official UNSW-NB15 benchmark results are claimed."
+abstract: "Offline defensive research software implementing leakage-aware machine-learning baselines for authorized academic network-flow data. One local run on user-provided UNSW-NB15-layout CSVs is documented; official byte provenance was not independently verified and observed predictor duplication limits interpretation."

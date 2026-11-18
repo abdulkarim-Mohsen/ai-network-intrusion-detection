@@ -1,109 +1,140 @@
 # AI-Based Network Intrusion Detection Using Machine Learning: A Reproducible Baseline Study
 
-**Research status:** Methods and software implemented; **official-dataset benchmark not yet conducted**  
-**Report version:** 2026-11-19 (benchmark-access and reproducibility update)  
-**Repository:** https://github.com/abdulkarim-Mohsen/ai-network-intrusion-detection  
-**Study type:** Defensive, offline, supervised binary classification research
+**Researcher:** Abdulkarim Mohsen Hussein Alhuos  
+**University:** Amran University  
+**Faculty:** College of Engineering and Information Technology  
+**Specialization:** Cybersecurity and Networks  
 
-> **Interpretation notice.** This document is a complete *research-protocol and software-verification report*, not a completed empirical comparison on UNSW-NB15. Real-dataset measurements must not be inferred from passing software tests. All tables explicitly distinguish provider facts, observations of code tests, and pending results.
+**Research status:** A single local **empirical benchmark completed** using user-provided UNSW-NB15-layout CSVs; independent source authentication and external replication remain outstanding.  
+**Execution:** 2026-11-18T22:12:10.975945+00:00  
+**Repository:** https://github.com/abdulkarim-Mohsen/ai-network-intrusion-detection  
+**Research type:** Defensive, offline supervised binary network-flow classification.
+
+> **Provenance:** The user supplied a ZIP downloaded from a shared OneDrive folder named UNSW-NB15 dataset. The two CSV names, schema, and record counts match UNSW's documented pre-partitioned CSVs. However, we did not independently verify that the file bytes came directly from the dataset provider. The CSVs remain private to the local experiment and are **not** in this GitHub repository. All reported model values below were genuinely calculated from the supplied files, not from synthetic test fixtures.
 
 ## Abstract
 
-Intrusion-detection classifiers must identify suspicious network flows while controlling false alarms. This project implements a reproducible, offline methodology to compare Logistic Regression and Random Forest for binary network-flow classification. The proposed benchmark uses the publicly documented UNSW-NB15 research corpus, retaining its provider-designated test partition and reserving an internal stratified validation split for model selection. A scikit-learn pipeline fits imputation, scaling, and categorical encoding exclusively on fitting data. The implementation computes per-class precision, recall, F1, ROC-AUC when defined, confusion matrices, false-positive rate, and false-negative rate; it also includes a read-only Streamlit dashboard and automated CI checks. The software pipeline has been exercised on synthetic fixtures, but the official UNSW-NB15 records have not been obtained or evaluated in this project. Therefore **no empirical intrusion-detection performance or superiority claim is reported**. The contribution at this stage is a transparent and testable baseline protocol with explicit limitations and reproducibility instructions.
+This study evaluates two supervised machine-learning baselines, Logistic Regression and Random Forest, for offline detection of suspicious network-flow records in user-supplied UNSW-NB15-format data. The submitted files contained 175,341 designated training records and 82,332 designated test records. A stratified 80/20 split of the designated training file supplied fitting and validation data. The numeric and categorical preprocessing components were fitted on the fitting subset only; `id`, `attack_cat`, and `label` were excluded from predictors. Random Forest was selected using validation attack-class F1 (96.22%) compared with Logistic Regression (95.03%). On the held-out test file, the selected Random Forest achieved 90.59% accuracy, 87.27% attack precision, 97.07% attack recall, 91.91% attack F1, and 98.46% ROC-AUC. Importantly, it produced 6,419 false positives among 37,000 normal test records (17.35% false-positive rate). A post-hoc feature-hash audit identified 8,054 test records sharing exact predictor hashes with records in the fitted subset, challenging the independence assumption. These measurements apply only to one local run on source-unverified supplied files and do not demonstrate production network reliability.
 
-**Keywords:** network intrusion detection; supervised machine learning; UNSW-NB15; reproducibility; data leakage; false-positive rate.
+**Keywords:** network intrusion detection; UNSW-NB15; Logistic Regression; Random Forest; held-out evaluation; false positives; data duplication.
 
 ## 1. Introduction and research problem
 
-Machine-learning-based network intrusion detection attempts to label network-flow observations as normal or suspicious. Reported performance depends not only on algorithms, but also on dataset composition, evaluation partitions, class imbalance, and how preprocessing is fitted. Leakage between model development and test data can produce overly optimistic estimates [7]. False positives are operationally costly because they require inspection of traffic that may be legitimate. The objective here is to establish an auditable comparison of two widely used baseline classifiers, not to claim a deployable security product.
-
-**Research question.** Under a training-only preprocessing protocol and an untouched, provider-defined test partition, how do Logistic Regression and Random Forest compare on attack-class F1 and false-positive/negative rates?
-
-**Objectives.** (i) Validate local academic dataset files; (ii) control avoidable preprocessing leakage; (iii) train two reproducible baselines; (iv) select a model using validation-only attack F1; (v) report class-aware held-out metrics without exposing flow records; and (vi) document code quality, limitations, and research provenance.
-
-**No prespecified winner is assumed.** A numerical difference in a future single held-out run is not automatically a statistically significant or generalizable improvement.
+Intrusion-detection systems must identify malicious activity without overwhelming analysts with false alarms. In machine-learning experiments, class imbalance, correlated or duplicate observations, source provenance, and test-set reuse can lead to misleading claims. Our research question is: **how do Logistic Regression and Random Forest compare on attack F1 when a prespecified validation protocol selects a single model for one held-out test evaluation?** This is a reproducible baseline experiment rather than a production system, novel algorithm, or peer-reviewed publication.
 
 ## 2. Dataset provenance and permission
 
-The planned data source is the **UNSW-NB15** dataset curated by UNSW Canberra [1–5]. The official UNSW source describes a configured partition with **175,341 training records** and **82,332 test records**. These figures are **published provider metadata, not observations made by this project**. The required local filenames are `UNSW_NB15_training-set.csv` and `UNSW_NB15_testing-set.csv` [1].
+UNSW's public dataset documentation identifies the *UNSW-NB15* train/test partitions [1–5] and specifies conditions for academic use and required references. The dataset is owned and licensed independently of this project's MIT-licensed source code. The user provided two files with these exact names:
 
-UNSW states that its dataset may be used for academic research with required attribution, while commercial use requires agreement from the authors. The provider instructs users to cite five specified publications [1–5]. The repository's MIT license covers **original source code only**; it does not relicense or redistribute dataset records. Official file identity and usage rights must be verified independently; matching filenames and local SHA-256 digests establish local file consistency but **do not authenticate a download's origin**. Data is not included in this repository.
+| User-provided file | Measured rows | Normal (label 0) | Attack (label 1) | SHA-256 |
+| --- | ---: | ---: | ---: | --- |
+| `UNSW_NB15_training-set.csv` | 175,341 | 56,000 | 119,341 | `bec7dd5ec88dc2a0ccc7a07879d338395ed7421750f675fd0339e07dfe0648fa` |
+| `UNSW_NB15_testing-set.csv` | 82,332 | 37,000 | 45,332 | `734fe6642edf758f7c94d7d9149426b49d202fe8e7bf0bef47392489c3c0a559` |
+
+Both files were read successfully from the uploaded ZIP, and each had 45 columns including `label` and no pandas-recognized missing cells. **These observations do not certify the provider origin** or independence of the two partitions. The SHA-256 fingerprints identify the exact local input bytes. Original CSV contents were neither committed nor included in distributable project archives.
 
 ## 3. Methods
 
-### 3.1 Classification target and predictors
+### 3.1 Binary labels and predictors
 
-Binary target `label` uses **0 = normal** and **1 = attack**. The loader checks column consistency and the target encoding. The predictor matrix excludes `label`, `attack_cat` (ground-truth category) and `id` (identifier). The explicit categorical columns are `proto`, `service`, and `state`. Remaining supported numerical fields follow the official split schema. Missing/invalid numeric values are handled by median imputation; numeric features are standardized. Categorical missing values are imputed by the most frequent training value, then one-hot encoded with unknown categories ignored. The meaningful category `-` is retained [6].
+The target is `label=1` for an attack and `label=0` for normal. After dropping `id`, `attack_cat`, and the target `label`, 42 predictors remain. Three are categorical (`proto`, `service`, `state`); others are numeric. Numeric imputation is by training medians followed by standardization. Categorical imputation is by training mode followed by one-hot encoding with unknown categories ignored. Training and preprocessing use the scikit-learn pipeline API [8].
 
-### 3.2 Data partitioning and leakage prevention
+### 3.2 Partitions and leakage controls
 
-The *provider's official test set* is held aside. Only the official training set is stratified into a model-fitting subset and a validation subset (`validation_fraction=0.2`, `seed=42` by default). Each algorithm receives an independent scikit-learn `Pipeline` containing a fresh, unfitted preprocessing transformer. All fitted statistics and learned categorical vocabularies come from the fitting subset only. Neither validation nor test observations are used to fit transformations. The test set is not used for hyperparameter search, feature selection or winner selection. Checking the file schema is not evidence of absence of source-level duplicates or temporally correlated flows [7].
+The supplied pre-designated test file was kept separate, and only the supplied training file was stratified with `random_state=42` and `validation_fraction=0.2`. The fit subset contained **140,272** records (**44,800 normal**, **95,472 attacks**); validation contained **35,069** records (**11,200 normal**, **23,869 attacks**). Each model's transformers were independently fitted on fit data only; there was no preprocessing fitted to validation or testing data. The winner was determined only from validation attack F1. The held-out test was evaluated once for the selected model. This design prevents direct **procedural** fit/test leakage but cannot eliminate duplicated or correlated source observations [7].
 
-### 3.3 Baseline models
+### 3.3 Fixed baseline configurations
 
-- **Logistic Regression:** `solver=lbfgs`, `class_weight=balanced`, default `max_iter=1000`, `random_state=42`.
-- **Random Forest:** default `n_estimators=100`, `max_depth=18`, `min_samples_leaf=2`, `class_weight=balanced_subsample`, `n_jobs=1`, `random_state=42`.
+- Logistic Regression: `solver=lbfgs`, `max_iter=1000`, `class_weight=balanced`, `random_state=42`.
+- Random Forest: `n_estimators=100`, `max_depth=18`, `min_samples_leaf=2`, `class_weight=balanced_subsample`, `n_jobs=1`, `random_state=42`.
+- Both pipelines use the same fit/validation partition and independent, training-only preprocessing.
 
-These are fixed baseline settings, not an exhaustive hyperparameter search. Both models train on the same fitting subset. The separate `nids train` command saves locally trusted serialized pipelines and a manifest; the `nids evaluate` command fits fresh models rather than loading those serialized objects. Dataset hashes, parameters, class counts, software versions and timestamps are recorded with the generated artifacts.
+The actual invocation was:
 
-### 3.4 Model selection and final evaluation
+```bash
+OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=src \
+python -m nids.cli evaluate --data-dir data/raw --output-dir artifacts/reports \
+  --seed 42 --trees 100 --max-iter 1000
+python -m scripts.render_evaluation_summary \
+  --input artifacts/reports/evaluation.json \
+  --output artifacts/reports/benchmark_summary.md
+```
 
-Both classifiers are scored on the **validation** subset. The winner maximizes **attack-class F1** (`positive_class=1`); the predetermined exact-tie rule chooses Logistic Regression. After this selection, **only the selected model** is scored on the official held-out test set. The classifier's native `predict` decision rule is used; no threshold search is performed. The protocol does not implement a repeated cross-validation, confidence intervals, calibration procedure or cross-dataset generalization test. Changing models after viewing the official test score would compromise its independent interpretation.
+**Measured execution environment:** Python 3.13.5; NumPy 2.3.5; pandas 2.2.3; scikit-learn 1.8.0; joblib 1.5.3. Python 3.11/3.12 software quality is checked separately in CI; this research run used Python 3.13.5. Dependency ranges were not frozen to exact lockfile hashes.
 
-### 3.5 Evaluation measures
+### 3.4 Metrics and model-selection rule
 
-For the positive/attack class, `TP` denotes detected attacks, `FP` normal records flagged as attacks, `TN` correctly recognized normal records, and `FN` missed attacks.
-
-| Measure | Definition / purpose |
-| --- | --- |
-| Attack precision | `TP / (TP + FP)`; proportion of alerts corresponding to attacks |
-| Attack recall | `TP / (TP + FN)`; fraction of attacks detected |
-| Attack F1 | `2 × precision × recall / (precision + recall)`; validation selection criterion |
-| False-positive rate | `FP / (FP + TN)`; proportion of truly normal records incorrectly alerted |
-| False-negative rate | `FN / (FN + TP)`; proportion of actual attacks missed |
-| Confusion matrix | `[[TN, FP], [FN, TP]]` with true classes as rows |
-| ROC-AUC | Threshold-independent ranking summary; undefined when only one true class appears |
-
-Class support, macro F1, weighted F1 and accuracy are recorded for context. Precision and F1 definitions require conventional handling of zero-denominator cases; the code uses scikit-learn's `zero_division=0`. A large accuracy value alone would not be sufficient evidence under class imbalance [6,7].
+Attack precision is TP/(TP+FP); attack recall is TP/(TP+FN); attack F1 is their harmonic mean. False-positive rate (FPR) is FP/(FP+TN) among actual normals and false-negative rate (FNR) is FN/(FN+TP) among attacks. Confusion matrix rows are true class [0,1], columns predicted [0,1]. ROC-AUC measures discrimination across thresholds. **Only positive-class validation F1 selected the winner**; no official-test score was used to compare both candidates or retune parameters after viewing final outcomes.
 
 ## 4. Software implementation and verification
 
-The codebase separates file loading, feature transformation, training, evaluation, chart generation, dashboard validation, and tests. Its Streamlit interface reads an offline aggregate `evaluation.json`; it does not scan networks, capture packets, deserialize downloaded models or display individual network records. The dashboard validates the basic arithmetic consistency of submitted confusion-matrix summaries but **cannot certify dataset origin**. GitHub Actions tests Python 3.11 and 3.12, installs project dependencies, checks dependency consistency, compiles Python, runs a tracked-file hygiene check, and enforces at least 90% coverage [8].
+The repository contains a local CSV loader, scikit-learn feature transformer, two baseline learners, validation/test evaluator, Matplotlib confusion and ROC plots, Streamlit aggregate dashboard, and GitHub Actions quality tests. The previous software-only benchmark passed 114 tests on synthetic fixtures; those tests are distinct from measured attack-detection outcomes. The aggregate result summary passed independent arithmetic consistency checks (`scripts.render_evaluation_summary`) on this experiment. The accompanying JSON contains real evaluation metrics and version metadata. Neither the repository nor its documentation redistributes the dataset or serialized model objects.
 
-**Observed software evidence (2026-11-18):** The full locally rerun suite passed **103 tests** (including documentation integrity tests), with **94.72%** source coverage. The Phase 6 GitHub Actions workflow completed successfully for both Python-version jobs; the Phase 7 workflow must be verified independently after upload. These numbers describe **software quality only**, not classification results. Documentation-only changes should be rechecked with the same CI gate and the new run identified in the experiment log. Sources for CI evidence are linked in [quality_assurance.md](quality_assurance.md).
+## 5. Results — local empirical baseline
 
-## 5. Results — empirical benchmark status
+### 5.1 Validation-only comparison (35,069 records)
 
-**No official UNSW-NB15 experiments have been run.** No measured model performance figures, confusion matrices, or performance graphs from official data are available. Any numbers in synthetic unit tests demonstrate expected behavior of software functions rather than benchmark effectiveness.
+| Metric (validation only) | Logistic Regression | Random Forest |
+| --- | ---: | ---: |
+| Accuracy | 93.24% | 94.92% |
+| ROC-AUC | 98.44% | 99.28% |
+| False-positive rate | 10.65% | 4.98% |
+| Attack precision | 95.01% | 97.60% |
+| Attack recall | 95.06% | 94.88% |
+| Attack F1 | 95.03% | 96.22% |
 
-| Benchmark output | Logistic Regression | Random Forest | Basis |
-| --- | --- | --- | --- |
-| Validation attack-class F1 | Not measured | Not measured | Official records unavailable |
-| Validation ROC-AUC | Not measured | Not measured | Official records unavailable |
-| Selected model | Not determined | Not determined | No official validation results |
-| Held-out attack precision / recall / F1 | Not measured | Not measured | Final test run not performed |
-| Held-out FPR / FNR / ROC-AUC | Not measured | Not measured | Final test run not performed |
+**Winner:** Random Forest (validation attack F1 96.22%, compared with Logistic Regression 95.03%). These are *validation metrics*, not both models' test scores. They are not used to claim test superiority.
 
-A complete future empirical results table must identify the tested official files, their SHA-256 digests, model selection criterion, observed class counts, confusion matrix, runtime environment and exact commands. The report should not be updated to state that UNSW results exist until those steps actually occur. Use [results_reporting_template.md](results_reporting_template.md) for that future update. A new tool, `python -m scripts.render_evaluation_summary`, can generate a locally stored aggregate Markdown summary from a consistent `evaluation.json` after a genuine run; it validates arithmetic but cannot authenticate source files. See [benchmark_execution.md](benchmark_execution.md) for the exact commands and the current official-download sign-in blocker.
+### 5.2 Held-out test — Random Forest only (82,332 records)
+
+| Measure | Observed value |
+| --- | ---: |
+| Accuracy | 90.59% |
+| Attack precision | 87.27% |
+| Attack recall | 97.07% |
+| Attack F1 | 91.91% |
+| Macro F1 | 90.33% |
+| Weighted F1 | 90.49% |
+| ROC-AUC | 98.46% |
+| False-positive rate (FPR) | 17.35% |
+| False-negative rate (FNR) | 2.93% |
+| True negatives (TN) | 30,581 |
+| False positives (FP) | 6,419 |
+| False negatives (FN) | 1,328 |
+| True positives (TP) | 44,004 |
+
+**Confusion matrix** (true rows normal/attack, predicted columns normal/attack):
+
+| Actual \ predicted | Normal | Attack |
+| --- | ---: | ---: |
+| Normal | 30,581 | 6,419 |
+| Attack | 1,328 | 44,004 |
+
+**Operational interpretation:** The held-out sample contains 37,000 genuinely normal records, of which 6,419 were incorrectly flagged as attacks (FPR 17.35%). The classifier missed 1,328 of 45,332 attacks (FNR 2.93%). Thus the high attack recall coexists with a notable false-alert burden. Class proportions differ between the training and test files; accuracy is insufficient on its own.
+
+### 5.3 Post-hoc feature-duplication audit — threats to independence
+
+Using `pandas.util.hash_pandas_object(..., index=False)` on the 42 selected predictors, **8,054 of 82,332 test records** shared an exact predictor fingerprint with at least one row in the fitted subset. In addition, 16,342 validation records shared a feature fingerprint with the fitted subset. The full designated training file contained 74,301 repeated feature-vector occurrences beyond the unique vectors. A matching 64-bit fingerprint is a practical near-exact proxy, not a formal proof of record provenance or identity, and identical feature vectors need not represent the same network event.
+
+This diagnostic was performed **after** the completed test evaluation, not to choose or retune either model. The overlap raises concerns that validation and test metrics could be optimistic and should be treated as **benchmark-specific**, not as estimates of performance on independent or unseen live flows. Results could change under source-aware deduplication, temporal grouping or external data; such checks require a *new, separately specified experiment*, not post-hoc replacement of this final held-out score. See [overlap audit](results/dataset_overlap_audit.json).
 
 ## 6. Limitations and threats to validity
 
-1. **External validity:** UNSW-NB15 was created in a controlled research environment. Even a high future benchmark score would not establish effectiveness against contemporary production traffic.
-2. **Source authenticity:** CSV filenames and hashes are insufficient to prove an official download; provenance must be checked manually.
-3. **Evaluation dependence:** Related or duplicated flows, collection-period dependencies, and distribution changes can undermine apparent train/test independence.
-4. **Class imbalance:** Overall accuracy can hide missed attacks; FPR is conditional on normal records and must not be confused with the false-discovery rate (`FP/(TP+FP)`).
-5. **Model scope:** This is binary flow classification, not attack-category attribution or live incident response. Decision thresholds are not calibrated and class probabilities may be miscalibrated.
-6. **Uncertainty:** The protocol does not currently calculate confidence intervals or perform external replication; a single test split is inadequate for broad causal or production claims.
-7. **Evaluation status:** All present verification uses synthetic fixtures; it cannot establish predictive utility on official data.
-8. **Dependency reproducibility:** Compatible versions are bounded but not fully pinned to exact lockfile hashes. Environment versions are recorded when training/evaluation is actually run.
+1. **Source authenticity:** The user-submitted CSVs match the official UNSW-NB15 train/test naming, shape and counts, but independent provider-byte verification was not possible in this session.
+2. **Correlated / duplicate observations:** Predictor-vector overlaps appear in training, validation and the held-out test. This may lead to optimistically biased metrics even without procedural preprocessing leakage.
+3. **False alarms and prevalence:** The false-positive rate is 17.35%; precision is prevalence-dependent and should not be conflated with FPR. An operational false alarm count per hour cannot be inferred from this static dataset.
+4. **Generalization:** The research dataset represents a historical controlled environment, not modern production infrastructure, zero-day attacks or an externally replicated deployment.
+5. **Uncertainty:** There are no bootstrap confidence intervals, repeated trials, additional holdouts, threshold calibration, or independently verified robustness studies.
+6. **Model scope:** Binary classification only, no attack attribution, network scanning, automatic blocking or real-time inference.
+7. **Reproducibility:** Seeds and software version snapshots were preserved, but cross-platform bitwise reproducibility has not been demonstrated and no exact lockfile exists.
 
 ## 7. Ethics, security and responsible research
 
-Only lawfully obtained, authorized academic records are in scope. Raw traffic, user identifiers, credentials, operational logs and trained models are omitted from Git history; Git index hygiene checks help prevent accidental inclusion. The software performs **no active scanning, exploitation, surveillance or live monitoring**. Generated reports contain only aggregate results. The project is not a certified intrusion-detection product or an operational security guarantee. Research limitations and data-source obligations must accompany any portfolio or scholarship presentation.
+The experiment uses uploaded academic tabular data only; the original datasets, row-level traffic records, serialized models, credentials and sensitive inputs are excluded from Git history and generated releases. GitHub hosts only source code, academic documentation, and aggregate evaluations. This is defensive educational research software and does not conduct active scanning, exploit hosts or inspect any live system. Academic attribution and dataset-provider restrictions continue to apply.
 
 ## 8. Conclusion and next empirical step
 
-The project delivers a modular, tested research implementation and an explicit validation/test protocol. **The software is implemented; the empirical research question remains unanswered** until the authorized original UNSW-NB15 CSVs are independently verified and evaluated. Once data are available, run the documented commands, preserve the artifact manifest and experiment outputs locally, and replace the results table only with measured values. See [reproducibility.md](reproducibility.md) for exact steps.
+For this one local benchmark, Random Forest exceeded Logistic Regression on the prespecified **validation attack-F1 selection metric** (96.22% versus 95.03%). Its held-out test attack F1 was 91.91%, with a substantial 17.35% FPR. The results answer the narrow, predeclared local classification comparison, but they do **not** establish superiority on the test set over Logistic Regression, generalization to deployment traffic, or independently authenticated UNSW source provenance. Next steps should include external source verification and a newly pre-specified source-aware deduplicated evaluation. The existing held-out test results must not be reused to tune the present model and portrayed as an unbiased first evaluation.
 
 ## References
 

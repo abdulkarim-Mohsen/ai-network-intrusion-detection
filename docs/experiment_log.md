@@ -49,3 +49,16 @@
 - The provider's dataset CSVs could not be downloaded, and no UNSW-NB15 benchmark run took place.
 - Added an aggregate-only report generator with arithmetic consistency tests. Its tests use **synthetic fixtures** and cannot establish actual prediction quality.
 - Next action: acquire the provider's pre-split CSVs with the user, verify origin and observed row counts, run `nids evaluate`, then review the output and update the research manuscript.
+
+
+## 2026-11-18 22:12:10 UTC — First measured experiment on user-supplied files
+
+- Received `OneDrive_3_19-11-2026.zip` from the user containing two correctly named CSVs; ZIP CRC check passed, row counts 175,341 training and 82,332 test, 45 columns, no pandas-recognized missing cells. Screenshot shows original access to a shared OneDrive folder. Independent provider-byte authentication was **not** performed.
+- Input SHA-256: training `bec7dd5ec88dc2a0ccc7a07879d338395ed7421750f675fd0339e07dfe0648fa`, testing `734fe6642edf758f7c94d7d9149426b49d202fe8e7bf0bef47392489c3c0a559`.
+- Predeclared protocol: fit/validation split 140,272/35,069 using seed 42; logistic regression (max_iter 1000) vs Random Forest (100 trees) chosen by validation attack F1. Both preprocessors fitted only on fit data. Test scored once for selected Random Forest.
+- Validation attack F1: Logistic Regression 95.03%, Random Forest 96.22%; selected Random Forest.
+- **Measured held-out test:** 90.59% accuracy, 91.91% attack F1, 17.35% FPR. Matrix `[[30581,6419],[1328,44004]]`; AUC 98.46%. Genuine results, not synthetic-fixture metrics.
+- Post-evaluation duplicate audit: 8,054 held-out test rows matched selected predictor-vector hashes present in fit rows; 16,342 validation rows also matched fit rows. This **post-hoc observation did not drive tuning or model selection** and limits independence/generalization claims.
+- Evaluation environment: Python 3.13.5, NumPy 2.3.5, pandas 2.2.3, scikit-learn 1.8.0, joblib 1.5.3.
+- Complete file: [measured aggregate JSON](results/evaluation.json); numerical summary: [benchmark_summary.md](results/benchmark_summary.md); full scientific discussion: [research_report.md](research_report.md).
+- Raw datasets remained under git-ignored `data/raw/`. Neither CSV rows nor serialized models are published. Confirmation of GitHub CI on the final commit must be checked separately.

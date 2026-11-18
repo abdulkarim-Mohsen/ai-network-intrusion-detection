@@ -1,6 +1,6 @@
 # Completing the Empirical UNSW-NB15 Benchmark
 
-**Status (2026-11-19):** The code, CLI, dashboard, and unit tests are implemented. **The official CSV files have not been obtained in this execution environment, so no authentic UNSW-NB15 model-accuracy measurements can be reported.**
+**Status (2026-11-19):** One local evaluation **has now been completed** on user-uploaded UNSW-NB15-format CSVs; source-byte authenticity was not independently certified. Measured aggregates are in [results/](results/README.md). This guide explains how to independently repeat the run with authorized provider files.
 
 ## 1. Obtain the source data and check permissions
 
@@ -13,7 +13,7 @@ Download the *pre-partitioned* CSV files (not the four raw multi-million-row CSV
 - `UNSW_NB15_training-set.csv` — UNSW page reports 175,341 rows.
 - `UNSW_NB15_testing-set.csv` — UNSW page reports 82,332 rows.
 
-**Those counts come from UNSW's page and have not been measured in our local environment.** The observed rows must be checked after the files are obtained. Retain an independent record of where and when the files were downloaded; a SHA-256 digest validates local identity, not authenticity.
+**Those counts were independently observed in the user-submitted files during the local run, matching UNSW's published counts.** This does not alone establish their origin. Retain an independent record of where and when the files were downloaded; a SHA-256 digest validates local identity, not authenticity.
 
 ## 2. Put files only in your local clone
 
@@ -47,7 +47,7 @@ On Linux/macOS, activate with `source .venv/bin/activate` and run the same `nids
 - Keep input hashes, commit SHA, Python/package versions, and execution commands in the local research notebook.
 - Review summary against the raw JSON manually, then **only after provenance verification** update `docs/research_report.md` and `docs/results_reporting_template.md` with the actual measured figures. Commit aggregate results only after checking data-provider permissions and privacy implications.
 
-## 5. If official download is unavailable
+## 5. If independently authenticated official data are unavailable
 
 You can run the complete unit-test suite without dataset access:
 
