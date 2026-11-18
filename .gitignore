@@ -35,3 +35,6 @@ dist/
 *.p12
 *.pfx
 .DS_Store
+
+# Optional local Streamlit credentials
+.streamlit/secrets.toml

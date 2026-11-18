@@ -12,6 +12,8 @@ def test_required_module_boundaries_present():
         "src/nids/models/evaluate.py",
         "src/nids/visualization/plots.py",
         "app/streamlit_app.py",
+        "src/nids/dashboard.py",
+        "docs/dashboard.md",
         "docs/research_report.md",
         "requirements.txt",
         ".gitignore",

@@ -8,7 +8,7 @@ from nids.config import ProjectPaths
 
 def test_fresh_project_has_no_experiment_artifacts(tmp_path):
     status = project_status(ProjectPaths(tmp_path))
-    assert status["phase"] == 4
+    assert status["phase"] == 5
     assert status["dataset_files_present"] is False
     assert status["trained_model_files_present"] is False
     assert status["evaluation_files_present"] is False
@@ -32,5 +32,5 @@ def test_cli_prints_parseable_status(monkeypatch, tmp_path, capsys):
     monkeypatch.setenv("NIDS_PROJECT_ROOT", str(tmp_path))
     assert main(["status"]) == 0
     printed = json.loads(capsys.readouterr().out)
-    assert printed["phase"] == 4
+    assert printed["phase"] == 5
     assert printed["project_root"] == str(tmp_path)

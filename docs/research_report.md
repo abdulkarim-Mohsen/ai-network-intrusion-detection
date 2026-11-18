@@ -1,10 +1,10 @@
 # Research Report — AI-Based Network Intrusion Detection
 
-**Status (2026-11-18):** Phase 4 evaluation software is implemented and verified only with synthetic test fixtures; **no experiments on official UNSW data have been executed**. Findings below are methodological, not benchmark results.
+**Status (2026-11-18):** Phase 5 includes a read-only aggregate dashboard; software is verified only with synthetic test fixtures; **no experiments on official UNSW data have been executed**. Findings below are methodological, not benchmark results.
 
 ## Abstract
 
-This study plans to compare Logistic Regression and Random Forest as baseline binary network-intrusion classifiers using the academic UNSW-NB15 dataset. Phases 2–4 implement local CSV checks, training-only preprocessing, two baseline classifiers, validation-only model selection, and selected-model held-out evaluation with aggregate charts. Numerical evaluation on real data remains pending and no detection performance is claimed.
+This study plans to compare Logistic Regression and Random Forest as baseline binary network-intrusion classifiers using the academic UNSW-NB15 dataset. Phases 2–5 implement local CSV checks, training-only preprocessing, two baseline classifiers, validation-only model selection, selected-model held-out evaluation with aggregate charts, and a read-only Streamlit reporting interface. Numerical evaluation on real data remains pending and no detection performance is claimed.
 
 ## Research question
 
@@ -20,7 +20,11 @@ The loader reads only local officially named CSV files, requires target values 0
 
 ## Verification and results
 
-Unit tests with artificial data check source validation, feature exclusions, missing values, deterministic splitting and predictions, independently fitted preprocessors, local trusted model serialization, and unaffected training when official-test fixtures are changed. **These are software tests, not intrusion-detection performance measurements.** The evaluation algorithm and plots were exercised on fictional rows; their numeric outputs **must not be reported as UNSW benchmark findings**. Valid benchmark precision, recall, F1, confusion matrices and ROC-AUC remain unavailable until independently verified official files are evaluated.
+Unit tests with artificial data check source validation, feature exclusions, missing values, deterministic splitting and predictions, independently fitted preprocessors, local trusted model serialization, and unaffected training when official-test fixtures are changed. **These are software tests, not intrusion-detection performance measurements.** The evaluation algorithm, plots and dashboard adapter were exercised on fictional rows; their numeric outputs **must not be reported as UNSW benchmark findings**. Valid benchmark precision, recall, F1, confusion matrices and ROC-AUC remain unavailable until independently verified official files are evaluated.
+
+## Dashboard (Phase 5)
+
+The offline Streamlit interface reads a fixed local `evaluation.json` file and validates consistency between confusion counts and metric values before displaying results. It compares both candidates on validation only; the separate test tab displays the previously selected model only, with a confusion matrix, class support, false-positive/negative rates and ROC-AUC if defined. Empty or corrupt reports are not replaced with invented performance. The display does not load or execute saved models, retrieve private flows, or monitor any live network; successful synthetic UI-mock tests are **not** proof of real-data performance or browser compatibility. See [Dashboard setup and limitations](dashboard.md).
 
 ## Limitations
 

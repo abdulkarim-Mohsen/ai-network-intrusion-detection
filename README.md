@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-> **Status: Phase 4 — validation-only model selection, held-out evaluation and aggregate plots implemented.** Tests use synthetic fixtures only. We have not downloaded or evaluated official UNSW records, so there are **no reportable research results yet**. The Streamlit dashboard remains a placeholder.
+> **Status: Phase 5 — offline read-only Streamlit dashboard implemented.** Tests use synthetic fixtures only. We have not downloaded or evaluated official UNSW records, so there are **no reportable research results yet**. The dashboard shows an honest empty state until local aggregate results exist.
 
 ## Project Overview
 
@@ -47,7 +47,8 @@ flowchart LR
 | `src/nids/models/train.py` | Reproducible Logistic Regression and Random Forest baselines | **3 — implemented** |
 | `src/nids/models/evaluate.py` | Select by validation F1; held-out metrics and false alarms | **4 — implemented** |
 | `src/nids/visualization/` | Confusion matrix / ROC figures | 4 |
-| `app/streamlit_app.py` | Offline results dashboard | 5 |
+| `src/nids/dashboard.py` | Validate aggregate JSON before display | **5 — implemented** |
+| `app/streamlit_app.py` | Offline results dashboard | **5 — implemented** |
 | `tests/` and `.github/workflows/` | Local and CI checks | 1, 6 |
 
 Read [docs/architecture.md](docs/architecture.md) for design details and file contracts.
@@ -81,11 +82,13 @@ PYTHONPATH=src python -m nids.cli status      # Linux/macOS
 
 The `status` command reports whether *local* dataset/model/result files exist. `inspect-data` prints aggregate counts only. `train` fits and saves two baselines under ignored `artifacts/models/` without evaluating test performance. `evaluate` **refits from the supplied CSVs** (it does not deserialize or reuse saved joblib), selects on validation F1, and evaluates **only the selected model** on the held-out test set, saving aggregate JSON and plots under ignored `artifacts/reports/`. See [training instructions](docs/training.md) and [evaluation protocol](docs/evaluation.md).
 
-When implemented in Phase 5, the dashboard will start using:
+The Phase 5 dashboard is implemented. Start it locally using:
 
 ```bash
 streamlit run app/streamlit_app.py
 ```
+
+The app reads `artifacts/reports/evaluation.json` locally, displays **only aggregate** validation/test metrics, offers a validation model-comparison chart and a held-out confusion matrix, and warns that CSV provenance is not established by file names or checksums. It never loads joblib/pickle objects, raw flow rows, or live network packets. Missing evaluation files produce setup instructions, **not fake model scores**. See [dashboard guide](docs/dashboard.md). Optional local override: `NIDS_REPORT_DIR`.
 
 ## Model Evaluation
 
@@ -93,14 +96,14 @@ streamlit run app/streamlit_app.py
 
 ## Results and Limitations
 
-**No numerical model results on real UNSW data are available at Phase 4.** Synthetic unit tests exercise the metrics and end-to-end evaluation pipeline, but their outputs are *not scientific benchmark scores*. The repository is not an operational detection system. UNSW permits academic research under attribution conditions; actual row distributions and predictive performance await authorized local-data inspection and experimentation. Training on a static academic dataset will not demonstrate reliable real-world generalization or suitability for deployment.
+**No numerical model results on real UNSW data are available at Phase 5.** Synthetic unit tests exercise the metrics and end-to-end evaluation pipeline, but their outputs are *not scientific benchmark scores*. The repository is not an operational detection system. UNSW permits academic research under attribution conditions; actual row distributions and predictive performance await authorized local-data inspection and experimentation. Training on a static academic dataset will not demonstrate reliable real-world generalization or suitability for deployment.
 
 ## Future Improvements
 
 - Obtain official data locally under UNSW academic-use terms and inspect source distributions (Phase 2 file validation).
 - Run the implemented reproducible baseline training on permitted official local data and record manifest hashes (Phase 3 operational run).
 - Run Phase 4 evaluation on authorized, verified official CSVs exactly once after model selection; add its actual measurements to the report.
-- Build a read-only, offline reporting interface (Phase 5).
+- Run the implemented offline dashboard on results from authorized, independently verified academic data (Phase 5 implemented; real-data run pending).
 - Add substantive preprocessing/training/evaluation tests and CI quality checks (Phase 6).
 - Complete an evidence-based research report with **measured** results (Phase 7).
 
