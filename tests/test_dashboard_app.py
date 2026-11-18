@@ -54,7 +54,7 @@ def test_valid_report_renders_both_validation_and_test_panels(monkeypatch, tmp_p
     runpy.run_path(str(APP), run_name="__main__")
     assert ui.info.called  # institutional dataset source is shown as an informational note
     assert not ui.warning.called  # no yellow provenance warning for a valid report
-    source_note = ui.info.call_args.args[0]
+    source_note = next(call.args[0] for call in ui.info.call_args_list if "**Dataset source:**" in call.args[0])
     assert "official UNSW Research dataset page" in source_note
     assert "SharePoint/OneDrive" in source_note
     assert "byte-for-byte" in source_note

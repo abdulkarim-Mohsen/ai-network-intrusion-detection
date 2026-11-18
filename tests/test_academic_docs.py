@@ -22,14 +22,14 @@ def test_report_contains_required_sections():
         assert heading in report
 
 
-def test_no_measured_unsw_claims_in_reporting_template():
+def test_measured_unsw_benchmark_is_recorded_consistently():
     report = _read("docs/research_report.md")
-    template = _read("docs/results_reporting_template.md")
-    assert "no empirical intrusion-detection performance" in report.lower()
-    assert "not measured" in report.lower()
-    assert "NOT MEASURED" in template
-    assert "NOT RUN" in template
-    assert "DO NOT treat this template as observed findings" in template
+    results = _read("docs/results_reporting_template.md")
+    assert "one local" in report.lower()
+    assert "official unsw" in report.lower()
+    assert "91.91%" in report and "17.35%" in report
+    assert "completed local benchmark" in results.lower()
+    assert "91.91%" in results and "17.35%" in results
 
 
 def test_dataset_required_citations_present():
@@ -55,10 +55,12 @@ def test_reproducibility_instructions_use_actual_commands():
     assert "SHA-256" in guide
 
 
-def test_portfolio_discloses_no_official_benchmark():
+def test_portfolio_states_measured_benchmark_and_limitations():
     summary = _read("docs/academic_portfolio.md").lower()
-    assert "synthetic software-test fixtures only" in summary
-    assert "no unsw-nb15 real-dataset benchmark" in summary
+    assert "measured local research result" in summary
+    assert "91.91%" in summary and "17.35%" in summary
+    assert "sharepoint" in summary
+    assert "independent generalization" in summary
 
 
 def test_github_citation_does_not_claim_dataset_license():
@@ -66,4 +68,5 @@ def test_github_citation_does_not_claim_dataset_license():
     assert "cff-version: 1.2.0" in citation
     assert "docs/references.md" in citation
     assert "repository-code:" in citation
-    assert "No official UNSW-NB15 benchmark results" in citation
+    assert "local UNSW-NB15 benchmark" in citation
+    assert "not a deployed IDS" in citation
