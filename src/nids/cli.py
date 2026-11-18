@@ -10,6 +10,7 @@ from typing import Sequence
 from nids.config import ProjectPaths, get_project_paths
 from nids.data.load import dataset_summary, load_official_split
 from nids.models.train import TrainingConfig, train_from_directory
+from nids.models.evaluate import evaluate_from_directory
 
 
 def _has_files(folder: Path, suffixes: tuple[str, ...]) -> bool:
@@ -22,7 +23,7 @@ def _has_files(folder: Path, suffixes: tuple[str, ...]) -> bool:
 def project_status(paths: ProjectPaths) -> dict[str, object]:
     """Report local artifact presence; never claim model validity."""
     return {
-        "phase": 3,
+        "phase": 4,
         "project_root": str(paths.root),
         "dataset_files_present": _has_files(paths.raw_data, (".csv", ".parquet")),
         "trained_model_files_present": _has_files(paths.models, (".joblib", ".pkl")),
@@ -44,6 +45,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     trainer.add_argument("--validation-fraction", type=float, default=0.2)
     trainer.add_argument("--trees", type=int, default=100, help="Number of Random Forest trees")
     trainer.add_argument("--max-iter", type=int, default=1000, help="Logistic Regression max iterations")
+    evaluator = subs.add_parser(
+        "evaluate", help="Offline validation selection and held-out evaluation"
+    )
+    evaluator.add_argument("--data-dir", type=Path, default=None)
+    evaluator.add_argument("--output-dir", type=Path, default=None)
+    evaluator.add_argument("--seed", type=int, default=42)
+    evaluator.add_argument("--validation-fraction", type=float, default=0.2)
+    evaluator.add_argument("--trees", type=int, default=100)
+    evaluator.add_argument("--max-iter", type=int, default=1000)
+    evaluator.add_argument("--no-plots", action="store_true", help="Skip PNG figures")
     args = parser.parse_args(argv)
     if args.command == "status":
         print(json.dumps(project_status(get_project_paths()), indent=2))
@@ -66,6 +77,22 @@ def main(argv: Sequence[str] | None = None) -> int:
             config,
         )
         print(json.dumps(output, indent=2))
+        return 0
+    if args.command == "evaluate":
+        paths = get_project_paths()
+        config = TrainingConfig(
+            seed=args.seed,
+            validation_fraction=args.validation_fraction,
+            forest_trees=args.trees,
+            logistic_max_iter=args.max_iter,
+        )
+        result = evaluate_from_directory(
+            args.data_dir if args.data_dir is not None else paths.raw_data,
+            args.output_dir if args.output_dir is not None else paths.reports,
+            config,
+            make_plots=not args.no_plots,
+        )
+        print(json.dumps(result, indent=2))
         return 0
     return 2
 

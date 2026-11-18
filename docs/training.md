@@ -56,6 +56,6 @@ artifacts/models/
 
 The unit test suite uses **only synthetic records** to exercise both model types, deterministic predictions, expected manifest fields, saving/reloading trusted local models, and independence from changes in official-test fixture values. These software tests are not evidence of detection efficacy on UNSW traffic.
 
-## Known limitations / planned next stage
+## Known limitations / Phase 4 next command
 
-The current procedure does not select a winner, tune models, compute metrics, analyze distribution shifts, or assess false-positive rates. This is deliberate: **Phase 4** will implement validation-only model selection and held-out evaluation, with uncertainty and limitations clearly documented. Reproducibility across different machines or library versions is not guaranteed by random seeds alone; the manifest captures versions for auditing.
+The `train` command only fits and persists models. Phase 4 introduces the **separate** `nids evaluate` command, which refits fresh baselines from local CSVs, selects by validation-positive F1, evaluates only the winner on the held-out test, and writes aggregate reports/plots. It does **not** unpickle existing artifacts. For methodology and reproducible flags see [evaluation.md](evaluation.md). Reproducibility across different machines or library versions is not guaranteed by seeds alone; the manifest captures versions for auditing.

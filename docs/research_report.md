@@ -1,10 +1,10 @@
 # Research Report — AI-Based Network Intrusion Detection
 
-**Status (2026-11-18):** Phase 3 methods completed, with model fitting verified only against synthetic test fixtures; **no experiments on official UNSW data have been executed**. Findings below are methodological, not benchmark results.
+**Status (2026-11-18):** Phase 4 evaluation software is implemented and verified only with synthetic test fixtures; **no experiments on official UNSW data have been executed**. Findings below are methodological, not benchmark results.
 
 ## Abstract
 
-This study plans to compare Logistic Regression and Random Forest as baseline binary network-intrusion classifiers using the academic UNSW-NB15 dataset. Phases 2–3 implement local CSV checks, a stratified validation partition from the official training split, explicit feature exclusion, and two distinct pipelines that fit preprocessing and classifiers on training-only data. Numerical evaluation remains pending and no predictive performance is claimed.
+This study plans to compare Logistic Regression and Random Forest as baseline binary network-intrusion classifiers using the academic UNSW-NB15 dataset. Phases 2–4 implement local CSV checks, training-only preprocessing, two baseline classifiers, validation-only model selection, and selected-model held-out evaluation with aggregate charts. Numerical evaluation on real data remains pending and no detection performance is claimed.
 
 ## Research question
 
@@ -14,13 +14,13 @@ How do Logistic Regression and Random Forest compare at detecting suspicious flo
 
 UNSW Sydney's official dataset page describes 175,341 training and 82,332 testing records. Those are **published dataset descriptions**, not local experiment observations. The data may be used freely for academic research according to the source's terms, with required publications cited; commercial use requires agreement by the dataset authors. No records are distributed here. See [Dataset provenance and references](dataset.md).
 
-## Implemented methodology (Phases 2–3)
+## Implemented methodology (Phases 2–4)
 
-The loader reads only local officially named CSV files, requires target values 0/1, and verifies the training/test schema. Feature extraction drops `id`, `label` and `attack_cat`. A train/validation split applies only to the provider-designated training data using stratification and a deterministic seed, while the official test partition is held out. For each baseline, a new scikit-learn Pipeline fits numeric imputation/scaling and categorical imputation/one-hot encoding on training rows only. Logistic Regression uses balanced class weights; Random Forest uses balanced-subsample weights and controlled tree depth. The training script records random states, dataset checksums, software versions, training counts and classifier parameters. No fitting uses validation or test data.
+The loader reads only local officially named CSV files, requires target values 0/1, and verifies the training/test schema. Feature extraction drops `id`, `label` and `attack_cat`. A train/validation split applies only to the provider-designated training data using stratification and a deterministic seed, while the official test partition is held out. For each baseline, a new scikit-learn Pipeline fits numeric imputation/scaling and categorical imputation/one-hot encoding on training rows only. Logistic Regression uses balanced class weights; Random Forest uses balanced-subsample weights and controlled tree depth. The training script records random states, dataset checksums, software versions, training counts and classifier parameters. No fitting uses validation or test data. **Evaluation protocol:** both classifiers are scored on the internal validation split; the model with higher F1 for attacks (positive label 1) is selected with a documented deterministic tie-breaker. Only the selected model is then scored on the held-out test split. Results include per-class support, precision, recall, F1, macro/weighted F1, confusion matrix, ROC-AUC where defined, false-positive rate among truly normal records, and false-negative rate among truly attack records. The current pipeline does not select its winner using the test results. Verification of source authenticity and terms remains a separate manual step.
 
 ## Verification and results
 
-Unit tests with artificial data check source validation, feature exclusions, missing values, deterministic splitting and predictions, independently fitted preprocessors, local trusted model serialization, and unaffected training when official-test fixtures are changed. **These are software tests, not intrusion-detection performance measurements.** Precision, recall, F1, confusion matrix and ROC-AUC are unavailable until the official data and actual trained models are evaluated.
+Unit tests with artificial data check source validation, feature exclusions, missing values, deterministic splitting and predictions, independently fitted preprocessors, local trusted model serialization, and unaffected training when official-test fixtures are changed. **These are software tests, not intrusion-detection performance measurements.** The evaluation algorithm and plots were exercised on fictional rows; their numeric outputs **must not be reported as UNSW benchmark findings**. Valid benchmark precision, recall, F1, confusion matrices and ROC-AUC remain unavailable until independently verified official files are evaluated.
 
 ## Limitations
 
@@ -28,7 +28,7 @@ No official records have been inspected or fitted. The preprocessing and trainin
 
 ## Next phase
 
-After acquiring the permitted official CSVs locally, run the implemented baseline training workflow and record its provenance manifest. Phase 4 will add validation-set model selection, false-positive analysis and a final held-out test evaluation. Do not infer real-world detection quality from synthetic fixture tests.
+After acquiring the permitted official CSVs locally, run the implemented baseline training workflow and record its provenance manifest. Run `nids evaluate --data-dir data/raw --output-dir artifacts/reports` once on the verified official files and record the environment, hashes, and measured results. Do not choose hyperparameters or further tune models based on this held-out test run; that would invalidate its purpose. Do not infer real-world detection quality from synthetic fixture tests.
 
 ## References
 

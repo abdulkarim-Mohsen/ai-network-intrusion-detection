@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-> **Status: Phase 3 — reproducible baseline training implemented and verified with synthetic fixtures.** No official UNSW records have been downloaded or trained on, and no performance scores are available. The Streamlit dashboard remains a placeholder.
+> **Status: Phase 4 — validation-only model selection, held-out evaluation and aggregate plots implemented.** Tests use synthetic fixtures only. We have not downloaded or evaluated official UNSW records, so there are **no reportable research results yet**. The Streamlit dashboard remains a placeholder.
 
 ## Project Overview
 
@@ -45,7 +45,7 @@ flowchart LR
 | `src/nids/data/` | Dataset import and validation | **2 — implemented** |
 | `src/nids/features/` | Leakage-safe preprocessing | **2 — implemented** |
 | `src/nids/models/train.py` | Reproducible Logistic Regression and Random Forest baselines | **3 — implemented** |
-| `src/nids/models/evaluate.py` | Held-out evaluation and metrics | 4 |
+| `src/nids/models/evaluate.py` | Select by validation F1; held-out metrics and false alarms | **4 — implemented** |
 | `src/nids/visualization/` | Confusion matrix / ROC figures | 4 |
 | `app/streamlit_app.py` | Offline results dashboard | 5 |
 | `tests/` and `.github/workflows/` | Local and CI checks | 1, 6 |
@@ -68,6 +68,7 @@ nids status
 nids inspect-data --data-dir data/raw
 # Only when you have the official CSVs downloaded locally:
 nids train --data-dir data/raw --output-dir artifacts/models --seed 42 --trees 100
+nids evaluate --data-dir data/raw --output-dir artifacts/reports --seed 42 --trees 100
 pytest -q
 ```
 
@@ -78,7 +79,7 @@ PYTHONPATH=src python -m nids.cli status      # Linux/macOS
 # PowerShell: $env:PYTHONPATH='src'; python -m nids.cli status
 ```
 
-The `status` command reports whether *local* dataset/model/result files exist. `inspect-data` prints aggregate counts only. The `train` command (requiring official local CSVs) fits both baselines and saves them under ignored `artifacts/models/` without evaluating test performance. See [training instructions](docs/training.md).
+The `status` command reports whether *local* dataset/model/result files exist. `inspect-data` prints aggregate counts only. `train` fits and saves two baselines under ignored `artifacts/models/` without evaluating test performance. `evaluate` **refits from the supplied CSVs** (it does not deserialize or reuse saved joblib), selects on validation F1, and evaluates **only the selected model** on the held-out test set, saving aggregate JSON and plots under ignored `artifacts/reports/`. See [training instructions](docs/training.md) and [evaluation protocol](docs/evaluation.md).
 
 When implemented in Phase 5, the dashboard will start using:
 
@@ -88,17 +89,17 @@ streamlit run app/streamlit_app.py
 
 ## Model Evaluation
 
-**Not run on official data yet.** Phase 3 fits the pipelines only; predictive metrics are not calculated. Predefined reporting will include class-wise precision/recall/F1, confusion matrix, ROC-AUC if scores and labels are appropriate, and a false-positive rate with clear denominators. The untouched test partition will not be used for model selection. See [experiment protocol](docs/experiment_log.md).
+**Implemented, not run on official data.** Phase 4 computes validation metrics for both baselines and selects a winner using *positive-class validation F1*. Only this preselected model is scored against the held-out provider testing split. Reported fields include class-wise precision/recall/F1, class support, 2×2 confusion matrix, false-positive rate `FP/(TN+FP)`, false-negative rate, macro/weighted F1, and ROC-AUC (set to `null` with an explanation if the true labels contain one class). Output PNGs contain only aggregate figures. See [evaluation protocol](docs/evaluation.md).
 
 ## Results and Limitations
 
-**No numerical model results are available at Phase 3.** The repository provides offline dataset loading, preprocessing and two classifier training pipelines tested only on synthetic fixtures, not an operational detection system. UNSW permits academic research under attribution conditions; actual row distributions and predictive performance await authorized local-data inspection and experimentation. Training on a static academic dataset will not demonstrate reliable real-world generalization or suitability for deployment.
+**No numerical model results on real UNSW data are available at Phase 4.** Synthetic unit tests exercise the metrics and end-to-end evaluation pipeline, but their outputs are *not scientific benchmark scores*. The repository is not an operational detection system. UNSW permits academic research under attribution conditions; actual row distributions and predictive performance await authorized local-data inspection and experimentation. Training on a static academic dataset will not demonstrate reliable real-world generalization or suitability for deployment.
 
 ## Future Improvements
 
 - Obtain official data locally under UNSW academic-use terms and inspect source distributions (Phase 2 file validation).
 - Run the implemented reproducible baseline training on permitted official local data and record manifest hashes (Phase 3 operational run).
-- Evaluate on held-out records and analyze false positives (Phase 4).
+- Run Phase 4 evaluation on authorized, verified official CSVs exactly once after model selection; add its actual measurements to the report.
 - Build a read-only, offline reporting interface (Phase 5).
 - Add substantive preprocessing/training/evaluation tests and CI quality checks (Phase 6).
 - Complete an evidence-based research report with **measured** results (Phase 7).

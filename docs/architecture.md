@@ -1,4 +1,4 @@
-# Software Architecture (Phase 3)
+# Software Architecture (Phase 4)
 
 ## Design principles
 
@@ -23,6 +23,7 @@ ai-network-intrusion-detection/
 ├── docs/
 │   ├── architecture.md
 │   ├── training.md
+│   ├── evaluation.md
 │   ├── experiment_log.md
 │   └── research_report.md
 ├── src/nids/
@@ -31,8 +32,8 @@ ai-network-intrusion-detection/
 │   ├── data/load.py                   # Phase 2
 │   ├── features/preprocess.py         # Phase 2
 │   ├── models/train.py                # Phase 3 implemented
-│   ├── models/evaluate.py             # Phase 4
-│   └── visualization/plots.py         # Phase 4
+│   ├── models/evaluate.py             # Phase 4 implemented
+│   └── visualization/plots.py         # Phase 4 implemented
 ├── tests/                             # synthetic offline unit tests
 ├── .gitignore
 ├── pyproject.toml
@@ -47,11 +48,11 @@ ai-network-intrusion-detection/
 | `data/load.py` | Official academic CSV paths | Validated DataFrame and schema report |
 | `features/preprocess.py` | Training DataFrame, target definition | Fitted training-only transformer |
 | `models/train.py` | Training/validation partitions, model config | Two fitted pipelines and versioned run manifest |
-| `models/evaluate.py` | Unseen test DataFrame, model bundle | Quantitative metrics and class-level error analysis |
+| `models/evaluate.py` | Local dataset and training config | Validation-based model selection; held-out selected-model metrics |
 | `visualization/plots.py` | Verified evaluation results | Saved figures |
 | `app/streamlit_app.py` | Local, non-sensitive results | Read-only model comparison view |
 
-**Status:** Dataset loading and leakage-safe feature processing (Phase 2) and Logistic Regression / Random Forest training with local model persistence (Phase 3) are implemented and tested using synthetic fixtures. No official UNSW records have been processed, and no full-dataset models or detection metrics exist. Evaluation and dashboard (Phases 4–5) remain placeholders. See [training protocol](training.md).
+**Status:** Dataset loading (Phase 2), model training (Phase 3), and validation/held-out evaluation with plots (Phase 4) are implemented and tested with synthetic fixtures. No official UNSW records have been processed and no real benchmark has been measured. The dashboard (Phase 5) remains a placeholder. See [training protocol](training.md) and [evaluation protocol](evaluation.md).
 
 ## Local directory convention
 
