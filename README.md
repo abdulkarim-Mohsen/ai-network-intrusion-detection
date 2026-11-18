@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-> **Status: Phase 1 — architecture and project scaffolding.** This repository does **not** yet contain a trained intrusion-detection model, experiment results, or a usable classification dashboard. All experiment findings will be reported only after verified execution.
+> **Status: Phase 2 — offline dataset validation and leakage-aware preprocessing implemented.** No official data has yet been downloaded, no model has been trained, and no performance scores have been measured. The dashboard remains a placeholder.
 
 ## Project Overview
 
@@ -23,9 +23,9 @@ Network intrusion detection requires distinguishing suspicious activity from ord
 
 ## Dataset and Methodology
 
-**Planned dataset:** UNSW-NB15, subject to verifying download conditions, usage permissions, schema, and official train/test partition before Phase 2. See the [UNSW Research dataset page](https://research.unsw.edu.au/projects/unsw-nb15-dataset). The dataset is **not bundled or mirrored** in this project; the project's MIT license applies to the code, **not** to third-party datasets.
+**Dataset chosen:** UNSW-NB15. Its [official research page](https://research.unsw.edu.au/projects/unsw-nb15-dataset) grants academic-research use, retains the authors' copyright, requires citations to five papers, and states that commercial use needs author agreement. The data are **not bundled, mirrored, or MIT licensed**. Instructions and attribution: [docs/dataset.md](docs/dataset.md).
 
-Proposed experiment: use an explicit held-out test partition; split the training portion for model selection; fit imputers, categorical encoders, and scalers on training folds only using scikit-learn `Pipeline` and `ColumnTransformer`; record fixed random seeds and installed package versions. Confirm that label-derived fields and identifier columns cannot leak target information. This is a proposed protocol, **not a completed experiment**.
+Implemented in Phase 2: offline reading and schema validation of the provider-named CSVs; stratified training/validation split only within the official training portion; exclusion of `id`, `attack_cat`, and `label`; and an **unfitted** `ColumnTransformer` for numeric median imputation/scaling and categorical mode imputation/one-hot encoding. **Fit it only on training data inside the Phase 3 model pipeline.** No official files have been processed yet. The held-out official test partition is not used for model selection.
 
 ## System Architecture
 
@@ -42,8 +42,8 @@ flowchart LR
 
 | Component | Planned responsibility | Phase |
 | --- | --- | --- |
-| `src/nids/data/` | Dataset import and validation | 2 |
-| `src/nids/features/` | Leakage-safe preprocessing | 2 |
+| `src/nids/data/` | Dataset import and validation | **2 — implemented** |
+| `src/nids/features/` | Leakage-safe preprocessing | **2 — implemented** |
 | `src/nids/models/train.py` | Reproducible model training | 3 |
 | `src/nids/models/evaluate.py` | Held-out evaluation and metrics | 4 |
 | `src/nids/visualization/` | Confusion matrix / ROC figures | 4 |
@@ -64,6 +64,8 @@ source .venv/bin/activate
 # .venv\Scripts\Activate.ps1
 python -m pip install -r requirements-dev.txt
 nids status
+# Download the two provider-named CSVs separately to data/raw/ before inspecting:
+nids inspect-data --data-dir data/raw
 pytest -q
 ```
 
@@ -74,7 +76,7 @@ PYTHONPATH=src python -m nids.cli status      # Linux/macOS
 # PowerShell: $env:PYTHONPATH='src'; python -m nids.cli status
 ```
 
-The command reports whether *local* dataset/model/result files exist. It does not evaluate network security.
+The `status` command reports whether *local* dataset/model/result files exist. The `inspect-data` command checks local official CSVs and prints aggregate counts only (not individual records). Neither trains a classifier or evaluates network security.
 
 When implemented in Phase 5, the dashboard will start using:
 
@@ -88,11 +90,11 @@ streamlit run app/streamlit_app.py
 
 ## Results and Limitations
 
-**No numerical model results are available at Phase 1.** The current repository provides a tested project skeleton and a basic status command, not an operational detection system. Dataset licensing, label distributions, and predictive performance require verification and experimental execution. Training on a static academic dataset will not demonstrate reliable real-world generalization or suitability for deployment.
+**No numerical model results are available at Phase 2.** The repository provides offline dataset loading and preprocessing logic with synthetic tests, not an operational detection system. UNSW permits academic research under attribution conditions; actual row distributions and predictive performance await authorized local-data inspection and experimentation. Training on a static academic dataset will not demonstrate reliable real-world generalization or suitability for deployment.
 
 ## Future Improvements
 
-- Verify official data access and study label definitions (Phase 2).
+- Obtain official data locally under UNSW academic-use terms and inspect source distributions (Phase 2 file validation).
 - Add reproducible baseline training and artifact metadata (Phase 3).
 - Evaluate on held-out records and analyze false positives (Phase 4).
 - Build a read-only, offline reporting interface (Phase 5).
@@ -101,7 +103,7 @@ streamlit run app/streamlit_app.py
 
 ## References
 
-- UNSW Sydney, [UNSW-NB15 dataset](https://research.unsw.edu.au/projects/unsw-nb15-dataset) (official research-project page; license/terms to be checked before use).
+- UNSW Sydney, [UNSW-NB15 dataset and provider citation requirements](https://research.unsw.edu.au/projects/unsw-nb15-dataset) (academic-use permission with copyright and mandatory references; see `docs/dataset.md`).
 - Pedregosa et al. (2011), [Scikit-learn: Machine Learning in Python](https://www.jmlr.org/papers/v12/pedregosa11a.html), *Journal of Machine Learning Research*, 12, 2825–2830.
 - scikit-learn developers, [Pipelines and composite estimators](https://scikit-learn.org/stable/modules/compose.html).
 - Streamlit, [Official documentation](https://docs.streamlit.io/).

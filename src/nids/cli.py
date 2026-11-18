@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Sequence
 
 from nids.config import ProjectPaths, get_project_paths
+from nids.data.load import dataset_summary, load_official_split
 
 
 def _has_files(folder: Path, suffixes: tuple[str, ...]) -> bool:
@@ -20,7 +21,7 @@ def _has_files(folder: Path, suffixes: tuple[str, ...]) -> bool:
 def project_status(paths: ProjectPaths) -> dict[str, object]:
     """Report local artifact presence; never claim model validity."""
     return {
-        "phase": 1,
+        "phase": 2,
         "project_root": str(paths.root),
         "dataset_files_present": _has_files(paths.raw_data, (".csv", ".parquet")),
         "trained_model_files_present": _has_files(paths.models, (".joblib", ".pkl")),
@@ -33,9 +34,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Offline NIDS research utilities")
     subs = parser.add_subparsers(dest="command", required=True)
     subs.add_parser("status", help="Report presence of local research artifacts")
+    inspector = subs.add_parser("inspect-data", help="Validate and summarize official local UNSW-NB15 CSVs")
+    inspector.add_argument("--data-dir", type=Path, default=None, help="Folder with official training/testing CSVs")
     args = parser.parse_args(argv)
     if args.command == "status":
         print(json.dumps(project_status(get_project_paths()), indent=2))
+        return 0
+    if args.command == "inspect-data":
+        directory = args.data_dir if args.data_dir is not None else get_project_paths().raw_data
+        print(json.dumps(dataset_summary(load_official_split(directory)), indent=2))
         return 0
     return 2
 

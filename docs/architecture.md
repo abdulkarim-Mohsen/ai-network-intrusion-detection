@@ -50,7 +50,7 @@ ai-network-intrusion-detection/
 | `visualization/plots.py` | Verified evaluation results | Saved figures |
 | `app/streamlit_app.py` | Local, non-sensitive results | Read-only model comparison view |
 
-**Status:** The contracts above are design proposals; components marked Phase 2–5 currently contain placeholders rather than working classifiers. Only configuration/status and scaffold tests are functional.
+**Status:** Dataset loading, partitioning and unfitted feature transformations in Phase 2 are implemented and tested with synthetic fixtures. No real data has been inspected or models trained. Components marked Phases 3–5 still contain placeholders.
 
 ## Local directory convention
 

@@ -1,19 +1,22 @@
-# Experiment Protocol and Run Log
+# Research Protocol and Experiment Log
 
-**Phase 1 status:** No dataset downloaded. No model trained. No measured evaluation results.
+**Phase 2 (2026-11-18):** Dataset loader, leakage-aware partitioning and an unfitted preprocessor were implemented. **No official UNSW dataset was downloaded or examined. No model was trained.** Tests use only small, synthetic fixtures.
 
-## Experimental plan (to be implemented)
+## Protocol
 
-1. Verify UNSW-NB15's official download page, citation requirements and permitted use.
-2. Inspect feature schema and target balance; remove target-derived and non-predictive identifier columns.
-3. Keep the designated official test split untouched if suitable; otherwise create a documented, stratified holdout before feature fitting. Never fit preprocessing on that holdout.
-4. Compare Logistic Regression and Random Forest using identical training/validation inputs, fixed random seeds, and appropriate preprocessing pipelines.
-5. Report per-class precision, recall, F1-score, confusion matrix, ROC-AUC when appropriate, and false-positive rate calculated as `FP / (FP + TN)` for the stated positive class.
-6. Record timestamps, Python/library versions, data source, feature exclusions, row counts, data partition strategy, hyperparameters, random state, and command lines. Include confidence/uncertainty where appropriate.
-7. Run the held-out test evaluation once after model selection; clearly state any deviations and limitations.
+1. Obtain the *official* train/test CSVs from UNSW and comply with required academic citations (see `docs/dataset.md`).
+2. Validate headers, binary target encoding, schema agreement, and aggregate class distributions before experiments.
+3. Preserve official test records as a holdout; split only the official training rows into train and validation partitions with seed `42` and stratification.
+4. Exclude label, attack category and identifiers. Do not infer feature transformations from validation or test.
+5. Fit scikit-learn preprocessing **inside each model's training pipeline**, never before the data split. Both baseline models will share the same partition protocol.
+6. Phase 3: train Logistic Regression and Random Forest baselines; record random states, versions, hyperparameters and artifacts.
+7. Phase 4: evaluate once on official test records after model selection. Report per-class precision, recall, F1, confusion matrix, ROC-AUC when suitable, and false-positive rate with declared positive label.
+8. Discuss class imbalance, possible duplicate/related flows, domain shift, and false alarms.
 
-## Execution log
-
-| Date | Event | Status | Notes |
-| --- | --- | --- | --- |
-| 2026-11-18 | Repository architecture scaffold | Prepared locally | No dataset or trained models |
+| Phase | Execution | Status |
+| --- | --- | --- |
+| 1 | Package structure, CLI and test scaffolding | Implemented |
+| 2 | Local CSV loader, validation, stratified partitions, unfitted preprocessing | Implemented; synthetic test cases only |
+| 2 | Official UNSW-NB15 file download / full-data inspection | **Not performed** |
+| 3 | Model training | **Not performed** |
+| 4 | Held-out evaluation | **Not performed** |
