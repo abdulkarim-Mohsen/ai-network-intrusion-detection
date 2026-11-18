@@ -1,6 +1,6 @@
 # Research Protocol and Experiment Log
 
-**Phase 5 (2026-11-18):** Reproducible training, validation-based model selection, selected-model held-out evaluation and aggregate plotting, and a read-only Streamlit reporting interface are implemented. All evaluation runs used **synthetic software-test fixtures**, not official UNSW records. No official download or real-dataset performance benchmark has been performed.
+**Phase 6 (2026-11-18):** Reproducible training, validation-based model selection, selected-model held-out evaluation and aggregate plotting, a read-only Streamlit reporting interface, and software quality checks are implemented. All evaluation runs used **synthetic software-test fixtures**, not official UNSW records. No official download or real-dataset performance benchmark has been performed.
 
 ## Protocol
 
@@ -12,7 +12,8 @@
 6. Phase 3 (implemented): fit two baseline pipelines strictly on training rows and save local model artifacts plus reproducibility metadata, including original CSV SHA-256 hashes when the real data become available.
 7. Phase 4 (implemented): compute class-wise validation metrics for both models; select using the attack-class F1 on **validation only** (Logistic Regression wins an exact tie); evaluate only the selected model on the final held-out test split. Report class support, precision, recall, F1, confusion matrix, ROC-AUC when possible, FPR=FP/(FP+TN), and FNR=FN/(TP+FN).
 8. Phase 5 (implemented): render and validate local aggregate report metrics without loading models, raw records, or interacting with networks; show no scores when results are missing. The dashboard does not authenticate dataset provenance.
-9. Discuss class imbalance, possible duplicate/related flows, domain shift, and false alarms.
+9. Phase 6 (implemented): run synthetic test fixtures, enforce statement coverage, check the Git index for restricted artifacts, and validate dependency consistency in CI. These checks do not establish IDS effectiveness.
+10. Discuss class imbalance, possible duplicate/related flows, domain shift, and false alarms.
 
 | Phase | Execution | Status |
 | --- | --- | --- |
@@ -22,6 +23,7 @@
 | 3 | Training implementation and synthetic fixture runs | **Implemented and locally tested**; official UNSW training not performed |
 | 4 | Evaluation code and aggregate graphics, synthetic test execution | **Implemented and locally tested; official UNSW evaluation not performed** |
 | 5 | Aggregate read-only Streamlit view, strict report validation, synthetic UI-mock smoke tests | **Implemented and locally tested; real browser and official UNSW runs pending** |
+| 6 | GitHub Actions quality gates, tracked-artifact hygiene and synthetic regression tests | **Implemented; CI result must be verified separately after each push** |
 
 **Important distinction:** Passing test cases on fictional rows demonstrates that the software executes; it does **not** validate the classifier on real intrusions. See `docs/training.md`.
 

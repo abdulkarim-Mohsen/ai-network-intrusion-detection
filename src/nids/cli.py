@@ -23,7 +23,7 @@ def _has_files(folder: Path, suffixes: tuple[str, ...]) -> bool:
 def project_status(paths: ProjectPaths) -> dict[str, object]:
     """Report local artifact presence; never claim model validity."""
     return {
-        "phase": 5,
+        "phase": 6,
         "project_root": str(paths.root),
         "dataset_files_present": _has_files(paths.raw_data, (".csv", ".parquet")),
         "trained_model_files_present": _has_files(paths.models, (".joblib", ".pkl")),

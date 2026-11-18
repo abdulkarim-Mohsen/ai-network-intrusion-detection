@@ -1,4 +1,4 @@
-# Software Architecture (Phase 5)
+# Software Architecture (Phase 6)
 
 ## Design principles
 
@@ -12,7 +12,8 @@
 
 ```text
 ai-network-intrusion-detection/
-├── .github/workflows/ci.yml         # automated scaffold checks
+├── .github/workflows/ci.yml         # cross-version CI quality gates
+├── .github/dependabot.yml           # weekly dependency-update proposals
 ├── app/streamlit_app.py              # Phase 5 read-only aggregate dashboard
 ├── artifacts/
 │   ├── models/                       # local model artifacts (ignored)
@@ -25,6 +26,7 @@ ai-network-intrusion-detection/
 │   ├── training.md
 │   ├── evaluation.md
 │   ├── dashboard.md
+│   ├── quality_assurance.md
 │   ├── experiment_log.md
 │   └── research_report.md
 ├── src/nids/
@@ -36,7 +38,9 @@ ai-network-intrusion-detection/
 │   ├── models/evaluate.py             # Phase 4 implemented
 │   ├── dashboard.py                   # Phase 5 aggregate report validation
 │   └── visualization/plots.py         # Phase 4 implemented
+├── scripts/check_repo_hygiene.py    # tracked data / credential filename policy
 ├── tests/                             # synthetic offline unit tests
+├── SECURITY.md
 ├── .gitignore
 ├── pyproject.toml
 ├── requirements.txt
@@ -55,7 +59,7 @@ ai-network-intrusion-detection/
 | `dashboard.py` | Local `evaluation.json` | Validated aggregate dashboard snapshot |
 | `app/streamlit_app.py` | Local, non-sensitive results | Read-only model comparison view |
 
-**Status:** Dataset loading (Phase 2), model training (Phase 3), selected-model held-out evaluation (Phase 4), and read-only dashboard (Phase 5) are implemented and tested with synthetic fixtures. No official UNSW records have been processed and no real benchmark has been measured. See [training protocol](training.md), [evaluation protocol](evaluation.md), and [dashboard guide](dashboard.md).
+**Status:** Dataset loading (Phase 2), model training (Phase 3), selected-model held-out evaluation (Phase 4), read-only dashboard (Phase 5), and CI quality gates (Phase 6) are implemented and tested with synthetic fixtures. No official UNSW records have been processed and no real benchmark has been measured. See [training protocol](training.md), [evaluation protocol](evaluation.md), and [dashboard guide](dashboard.md).
 
 ## Local directory convention
 

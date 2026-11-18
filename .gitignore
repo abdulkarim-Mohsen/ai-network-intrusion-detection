@@ -38,3 +38,8 @@ dist/
 
 # Optional local Streamlit credentials
 .streamlit/secrets.toml
+
+# Tool-generated synchronization manifests and coverage files
+phase*_git_payload.json
+coverage.xml
+*.bundle
