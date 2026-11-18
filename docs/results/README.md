@@ -6,6 +6,7 @@ This directory contains **aggregate results only**; no original CSVs, traffic re
 
 - [evaluation.json](evaluation.json) — actual validation scores for both models, held-out scores for only the selected model, class counts, parameters, software versions and input SHA-256 digests.
 - [benchmark_summary.md](benchmark_summary.md) — arithmetic-checked human-readable metrics.
+- [kali_20_trees_summary.md](kali_20_trees_summary.md) — separate Kali Linux/VirtualBox reproduction using 20 Random Forest trees (attack F1 91.85%, accuracy 90.51%, FPR 17.55%).
 - [dataset_overlap_audit.json](dataset_overlap_audit.json) — post-hoc duplicate-predictor fingerprints; potential optimism in validation and testing is a key limitation.
 - [Research report](../research_report.md) — full methodology and discussion.
 
