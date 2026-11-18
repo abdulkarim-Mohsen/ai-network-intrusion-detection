@@ -1,6 +1,6 @@
 # Research Protocol and Experiment Log
 
-**Phase 6 (2026-11-18):** Reproducible training, validation-based model selection, selected-model held-out evaluation and aggregate plotting, a read-only Streamlit reporting interface, and software quality checks are implemented. All evaluation runs used **synthetic software-test fixtures**, not official UNSW records. No official download or real-dataset performance benchmark has been performed.
+**Phase 7 (2026-11-18):** Reproducible training, validation-based model selection, selected-model held-out evaluation and aggregate plotting, a read-only Streamlit reporting interface, and software quality checks are implemented. All evaluation runs used **synthetic software-test fixtures**, not official UNSW records. No official download or real-dataset performance benchmark has been performed.
 
 ## Protocol
 
@@ -14,6 +14,7 @@
 8. Phase 5 (implemented): render and validate local aggregate report metrics without loading models, raw records, or interacting with networks; show no scores when results are missing. The dashboard does not authenticate dataset provenance.
 9. Phase 6 (implemented): run synthetic test fixtures, enforce statement coverage, check the Git index for restricted artifacts, and validate dependency consistency in CI. These checks do not establish IDS effectiveness.
 10. Discuss class imbalance, possible duplicate/related flows, domain shift, and false alarms.
+11. Phase 7: publish an auditable manuscript, source bibliography, model card, unfilled results template, and reproducibility checklist. **Do not report synthetic fixture scores as UNSW results.**
 
 | Phase | Execution | Status |
 | --- | --- | --- |
@@ -24,7 +25,20 @@
 | 4 | Evaluation code and aggregate graphics, synthetic test execution | **Implemented and locally tested; official UNSW evaluation not performed** |
 | 5 | Aggregate read-only Streamlit view, strict report validation, synthetic UI-mock smoke tests | **Implemented and locally tested; real browser and official UNSW runs pending** |
 | 6 | GitHub Actions quality gates, tracked-artifact hygiene and synthetic regression tests | **Implemented; CI result must be verified separately after each push** |
+| 7 | Academic report, required dataset citations, reproducibility guide, model card and portfolio summary | **Documentation implemented; no official-data results** |
 
 **Important distinction:** Passing test cases on fictional rows demonstrates that the software executes; it does **not** validate the classifier on real intrusions. See `docs/training.md`.
 
 **Data provenance limitation:** The loader validates schema and expected filenames, not the authenticity or rights attached to each CSV. Only results from independently verified official files may be cited in academic claims. The official test is opened during input validation, but its labels are never used to fit, tune, or select a model.
+
+
+## Phase 7 documentation verification (2026-11-18)
+
+- **Source:** all six academic-documentation tests passed alongside the existing synthetic test suite: **103/103 locally**.
+- **Measured local statement coverage:** **94.72%**, using `python -m pytest -q --cov=nids --cov=app --cov-report=term-missing:skip-covered --cov-fail-under=90`.
+- **Python syntax compilation:** passed for application, source, tests and scripts.
+- **Local smoke test:** `PYTHONPATH=src python -m nids.cli status` reported no dataset, model or evaluation files.
+- **Local Git index hygiene check:** passed on the existing local working-tree index; repository-wide CI must be rechecked after the Phase 7 push.
+- **Local `pip check`:** failed on a dependency conflict between unrelated installed `moviepy` and `pillow` packages in the shared runner environment. This is **not evidence of a project dependency failure**. The project CI uses a fresh Python environment and should be checked after the push.
+- **Last verified Phase 6 GitHub Actions:** [successful workflow run](https://github.com/abdulkarim-Mohsen/ai-network-intrusion-detection/actions/runs/44338575947). The Phase 7 run needs separate verification.
+- **Research benchmark:** not performed, with official CSV files absent. No model performance metrics exist.

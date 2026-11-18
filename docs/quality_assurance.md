@@ -56,3 +56,8 @@ The `pip check` result applies to **the current environment**, including unrelat
 - Code and tests are intended to run without external datasets.
 - A passing unit-test suite confirms internal program behavior on controlled synthetic inputs, **not** the scientific efficacy of an IDS.
 - Running Streamlit in a browser and benchmarking on authorized official UNSW records remain separate validations; do not claim either until performed.
+
+
+## Public evidence and Phase 7 update
+
+The Phase 6 CI workflow completed successfully on the isolated GitHub runners: [workflow run 44338575947](https://github.com/abdulkarim-Mohsen/ai-network-intrusion-detection/actions/runs/44338575947). Phase 7 adds academic-documentation integrity tests; rerun CI on the new commit before claiming Phase 7 GitHub verification. Local Phase 7 verification: 103/103 tests passed, 94.72% coverage. Local `pip check` has an unrelated MoviePy/Pillow conflict in the shared sandbox; this should not be misreported as a failed test on the project's clean CI environment.

@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this research software, cite this repository and credit the UNSW-NB15 dataset publications listed in docs/references.md when using that dataset."
+title: "AI-Based Network Intrusion Detection Using Machine Learning"
+type: software
+authors:
+  - name: "AI Network Intrusion Detection Project Contributors"
+repository-code: "https://github.com/abdulkarim-Mohsen/ai-network-intrusion-detection"
+url: "https://github.com/abdulkarim-Mohsen/ai-network-intrusion-detection"
+license: MIT
+abstract: "Offline defensive research software implementing leakage-aware machine-learning baselines for authorized academic network-flow data. No official UNSW-NB15 benchmark results are claimed."

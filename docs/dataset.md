@@ -62,3 +62,8 @@ The `inspect-data` command reads only the two local CSV files, checks required c
 This dataset is from a controlled simulation setting rather than live deployment. Its provided train/test partitions are not proof of time-based independence or absence of highly similar sessions. Class proportions can differ between train and test. Future evaluation must report the positive-class definition, class distributions, prevalence-sensitive metrics, and false-positive rate, and explicitly discuss any split limitations.
 
 **Status on 2026-11-18:** Dataset download and actual-row inspection have not been performed. The loader and preprocessing logic have been tested on *synthetic fixtures only*.
+
+
+## Complete mandatory bibliography
+
+The UNSW original page requires citation of **five publications**. Full, publisher-linked entries are available in [references.md](references.md). The research report contains all five, and the dataset is not relicensed by the repository MIT license.

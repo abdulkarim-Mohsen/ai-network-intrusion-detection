@@ -1,4 +1,4 @@
-# Software Architecture (Phase 6)
+# Software Architecture (Phase 7)
 
 ## Design principles
 
@@ -59,8 +59,11 @@ ai-network-intrusion-detection/
 | `dashboard.py` | Local `evaluation.json` | Validated aggregate dashboard snapshot |
 | `app/streamlit_app.py` | Local, non-sensitive results | Read-only model comparison view |
 
-**Status:** Dataset loading (Phase 2), model training (Phase 3), selected-model held-out evaluation (Phase 4), read-only dashboard (Phase 5), and CI quality gates (Phase 6) are implemented and tested with synthetic fixtures. No official UNSW records have been processed and no real benchmark has been measured. See [training protocol](training.md), [evaluation protocol](evaluation.md), and [dashboard guide](dashboard.md).
+**Status:** Dataset loading (Phase 2), model training (Phase 3), selected-model held-out evaluation (Phase 4), read-only dashboard (Phase 5), CI quality gates (Phase 6), and academic research documentation (Phase 7) are implemented and tested with synthetic fixtures. No official UNSW records have been processed and no real benchmark has been measured. See [training protocol](training.md), [evaluation protocol](evaluation.md), and [dashboard guide](dashboard.md).
 
 ## Local directory convention
 
 `NIDS_PROJECT_ROOT` may override the project root for tests or alternative working directories. If unset, the root is resolved relative to the installed `nids` source files. Files should not be downloaded automatically by importing modules.
+
+
+**Academic evidence:** [research report](research_report.md), [verified sources](references.md), [model card](model_card.md), and [reproducibility checklist](reproducibility.md). These documents do not establish measured official-data performance.
